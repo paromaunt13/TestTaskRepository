@@ -37,8 +37,8 @@ public class AudioManager : MonoBehaviour
         if (musicEnabled)
         {
             _audioSource.outputAudioMixerGroup = _backgroundMusicGroup;
-            _backgroundMusic.Play();
             _backgroundMusic.loop = true;
+            _backgroundMusic.Play();         
         }
         else
         {
@@ -48,7 +48,7 @@ public class AudioManager : MonoBehaviour
 
     private void CheckForKeys()
     {
-        if (!PlayerPrefs.HasKey(MusicKey) || !PlayerPrefs.HasKey(SoundKey))
+        if (!PersistentDataManager.CheckKey(MusicKey) || !PersistentDataManager.CheckKey(SoundKey))
         {
             _soundEnabled = true;
             _musicEnabled = true;
@@ -65,10 +65,6 @@ public class AudioManager : MonoBehaviour
         {           
             _audioSource.outputAudioMixerGroup = _soundGroup;
             _audioSource.PlayOneShot(audioClip);
-        }
-        else
-        {
-            return;
         }
     }
 
@@ -88,14 +84,13 @@ public class AudioManager : MonoBehaviour
 
     public void SaveSettings()
     {
-        PlayerPrefs.SetInt(SoundKey, _soundEnabled ? 1 : 0);
-        PlayerPrefs.SetInt(MusicKey, _musicEnabled ? 1 : 0);
-        PlayerPrefs.Save();
+        PersistentDataManager.SetBool(SoundKey, _soundEnabled);
+        PersistentDataManager.SetBool(MusicKey, _musicEnabled);
     }
 
     public void LoadSettings()
     {
-        _soundEnabled = PlayerPrefs.GetInt(SoundKey, 1) == 1;
-        _musicEnabled = PlayerPrefs.GetInt(MusicKey, 1) == 1;
+        _soundEnabled = PersistentDataManager.GetBool(SoundKey);
+        _musicEnabled = PersistentDataManager.GetBool(MusicKey);
     }
 }

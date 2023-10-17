@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using UnityEngine;
 
 public class PlayerMoney : MonoBehaviour
@@ -18,7 +16,7 @@ public class PlayerMoney : MonoBehaviour
 
     private void CheckForMoney()
     {
-        if (PlayerPrefs.HasKey(MoneyKey))
+        if (PersistentDataManager.CheckKey(MoneyKey))
         {
             LoadMoneyData();
         }
@@ -31,14 +29,13 @@ public class PlayerMoney : MonoBehaviour
 
     private void LoadMoneyData()
     {
-        MoneyAmount = PlayerPrefs.GetInt(MoneyKey, 0);
+        MoneyAmount = PersistentDataManager.GetInt(MoneyKey);
         EventBus.OnMoneyValueChanged?.Invoke(MoneyAmount);
     }
 
     private void SaveMoneyData()
     {
-        PlayerPrefs.SetInt(MoneyKey, MoneyAmount);
-        PlayerPrefs.Save();
+        PersistentDataManager.SetInt(MoneyKey, MoneyAmount);
     }
 
     public void AddMoney(int moneyAmount)
