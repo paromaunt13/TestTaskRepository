@@ -1,96 +1,74 @@
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance;
 
-    [SerializeField] private AudioSource _backgroundMusic;
-    [SerializeField] private AudioMixer _audioMixer;
-    [SerializeField] private AudioMixerGroup _soundGroup;
-    [SerializeField] private AudioMixerGroup _backgroundMusicGroup;
+    [SerializeField] private AudioSource backgroundMusic;
+    [SerializeField] private AudioMixerGroup soundGroup;
+    [SerializeField] private AudioMixerGroup backgroundMusicGroup;
 
     private AudioSource _audioSource;
-
-    private const string MusicKey = "MusicEnabled";
-    private const string SoundKey = "SoundEnabled";
-
-    private bool _soundEnabled;
-    private bool _musicEnabled;
-
-    public bool SoundEnabled => _soundEnabled;
-    public bool MusicEnabled => _musicEnabled;
+    
+    public bool SoundEnabled { get; private set; }
+    public bool MusicEnabled { get; private set; }
 
     private void Awake()
     {
+        if (Instance != null)
+            Destroy(gameObject);
+        
         Instance = this;
 
         _audioSource = GetComponent<AudioSource>();
-        
-        CheckForKeys();
 
-        PlayBackgroundMusic(_musicEnabled);
+        LoadSettings();
+
+        PlayBackgroundMusic(MusicEnabled);
     }
 
     private void PlayBackgroundMusic(bool musicEnabled)
     {
         if (musicEnabled)
         {
-            _audioSource.outputAudioMixerGroup = _backgroundMusicGroup;
-            _backgroundMusic.loop = true;
-            _backgroundMusic.Play();         
+            _audioSource.outputAudioMixerGroup = backgroundMusicGroup;
+            backgroundMusic.loop = true;
+            backgroundMusic.Play();
         }
         else
-        {
-            _backgroundMusic.Stop();
-        }
+            backgroundMusic.Stop();
     }
 
-    private void CheckForKeys()
+    private void LoadSettings()
     {
-        if (!PersistentDataManager.CheckKey(MusicKey) || !PersistentDataManager.CheckKey(SoundKey))
-        {
-            _soundEnabled = true;
-            _musicEnabled = true;
-        }
-        else
-        {
-            LoadSettings();
-        }
+        SoundEnabled = PersistentDataManager.SoundState;
+        MusicEnabled = PersistentDataManager.MusicState;
+    }
+    
+    public void SaveSettings()
+    {
+        PersistentDataManager.MusicState = MusicEnabled;
+        PersistentDataManager.SoundState = SoundEnabled;
     }
 
     public void PlaySound(AudioClip audioClip)
     {
-        if (_soundEnabled)
-        {           
-            _audioSource.outputAudioMixerGroup = _soundGroup;
-            _audioSource.PlayOneShot(audioClip);
-        }
+        if (!SoundEnabled) return;
+        _audioSource.outputAudioMixerGroup = soundGroup;
+        _audioSource.PlayOneShot(audioClip);
     }
 
     public void SwitchSoundState(bool enabled)
     {
-        _soundEnabled = enabled;
-        SaveSettings();
+        SoundEnabled = enabled;
     }
 
     public void SwitchMusicState(bool enabled)
     {
-        _musicEnabled = enabled;
+        MusicEnabled = enabled;
 
-        PlayBackgroundMusic(_musicEnabled);
-        SaveSettings();
-    }
-
-    public void SaveSettings()
-    {
-        PersistentDataManager.SetBool(SoundKey, _soundEnabled);
-        PersistentDataManager.SetBool(MusicKey, _musicEnabled);
-    }
-
-    public void LoadSettings()
-    {
-        _soundEnabled = PersistentDataManager.GetBool(SoundKey);
-        _musicEnabled = PersistentDataManager.GetBool(MusicKey);
+        PlayBackgroundMusic(MusicEnabled);
     }
 }

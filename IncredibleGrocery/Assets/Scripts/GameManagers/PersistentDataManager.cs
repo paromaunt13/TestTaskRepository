@@ -2,28 +2,61 @@ using UnityEngine;
 
 public class PersistentDataManager
 {
-    public static void SetBool(string key, bool value)
+    private const string SoundKey = "SoundEnabled";
+    private const string MusicKey = "MusicEnabled";
+    private const string MoneyKey = "PlayerMoney";
+
+    private static bool? _musicState;
+    private static bool? _soundState;
+    
+    private static int? _moneyAmount;
+
+    public static bool MusicState
     {
-        PlayerPrefs.SetInt(key, value ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-    public static bool GetBool(string key)
-    {
-        return PlayerPrefs.GetInt(key, 0) == 1;
+        get
+        {
+            if (!PlayerPrefs.HasKey(MusicKey)) return true;
+            _musicState ??= PlayerPrefs.GetInt((MusicKey), 0) == 1;
+            return _musicState.Value;
+        }
+        set
+        {
+            _musicState = value;
+            PlayerPrefs.SetInt(MusicKey, _musicState.Value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
     }
 
-    public static void SetInt(string key, int value)
+    public static bool SoundState
     {
-        PlayerPrefs.SetInt(key, value);
-        PlayerPrefs.Save();
-    }
-    public static int GetInt(string key)
-    {
-        return PlayerPrefs.GetInt(key);
+        get
+        {
+            if (!PlayerPrefs.HasKey(SoundKey)) return true;
+            _soundState ??= PlayerPrefs.GetInt((SoundKey), 0) == 1;
+            return _soundState.Value;
+        }
+        set
+        {
+            _soundState = value;
+            PlayerPrefs.SetInt(SoundKey, _soundState.Value ? 1 : 0);
+            PlayerPrefs.Save();
+        }
     }
 
-    public static bool CheckKey(string key)
+    public static int MoneyAmount
     {
-        return PlayerPrefs.HasKey(key);
+        get
+        {
+            if (!PlayerPrefs.HasKey(MoneyKey)) return 0;
+            _moneyAmount ??= PlayerPrefs.GetInt(MoneyKey);
+            return _moneyAmount.Value;
+        }
+
+        set
+        {
+            _moneyAmount = value;
+            PlayerPrefs.SetInt(MoneyKey, _moneyAmount.Value);
+            PlayerPrefs.Save();
+        }
     }
 }

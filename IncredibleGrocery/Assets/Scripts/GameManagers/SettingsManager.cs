@@ -1,35 +1,29 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class SettingsManager : MonoBehaviour
 {
-    [SerializeField] private SoundsData _soundsData;
+    [SerializeField] private Button settingsButton;
+    [SerializeField] private Button saveButton;
 
-    [SerializeField] private Button _settingsButton;
-    [SerializeField] private Button _saveButton;
-
-    [SerializeField] private GameObject _settingsPanel;
+    [SerializeField] private GameObject settingsPanel;
 
     private void Start()
     {
-        _settingsButton.onClick.AddListener(ShowSettingsPanel);
-        _saveButton.onClick.AddListener(Save);
+        settingsButton.onClick.AddListener(ShowSettingsPanel);
+        saveButton.onClick.AddListener(Save);
     }
 
     private void ShowSettingsPanel()
     {
-        _settingsPanel.SetActive(true);
-    }
-
-    private void OnDisable()
-    {
-        _saveButton.onClick.RemoveListener(Save);
+        settingsPanel.SetActive(true);
     }
 
     private void Save()
     {
         AudioManager.Instance.SaveSettings();
-        
-        _settingsPanel.SetActive(false);
+
+        settingsPanel.SetActive(false);
     }
 }

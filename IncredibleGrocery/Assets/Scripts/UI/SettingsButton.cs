@@ -2,31 +2,28 @@ using TMPro;
 using UnityEngine;
 
 public class SettingsButton : InterfaceButton
-{  
-    [SerializeField] protected Sprite _enabledImage;
-    [SerializeField] protected Sprite _disabledImage;
-    [SerializeField] protected TMP_Text _buttonText;
+{
+    [SerializeField] protected Sprite enabledImage;
+    [SerializeField] protected Sprite disabledImage;
+    [SerializeField] protected TMP_Text buttonText;
 
-    protected const string OnText = "ON";
-    protected const string OffText = "OFF";
+    private const string OnText = "ON";
+    private const string OffText = "OFF";
 
-    protected override void OnClick()
+    private bool _enabled;
+
+    protected void UpdateButtonView(bool enabled)
     {
-        base.OnClick();
-    }
-
-    protected void UpdateButtonView(ButtonState buttonState)
-    {
-        switch (buttonState)
+        switch (enabled)
         {
-            case ButtonState.Enabled:
-                _button.image.sprite = _enabledImage;
-                _buttonText.text = OnText;
+            case true:
+                _button.image.sprite = enabledImage;
+                buttonText.text = OnText;
                 break;
-            case ButtonState.Disabled:
-                _button.image.sprite = _disabledImage;
-                _buttonText.text = OffText;
+            case false:
+                _button.image.sprite = disabledImage;
+                buttonText.text = OffText;
                 break;
-        }    
+        }
     }
 }

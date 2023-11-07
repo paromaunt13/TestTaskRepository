@@ -1,57 +1,60 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class OrderManager : MonoBehaviour
 {
-    [SerializeField] private StorageData _storageContent;
+    [SerializeField] private StorageData storageContent;
 
-    [SerializeField] private int _minProductAmount;
-    [SerializeField] private int _maxProductAmount;
+    [SerializeField] private int minProductAmount;
+    [SerializeField] private int maxProductAmount;
 
+    public static Action<Order> OnOrderCreated;
+    
     private List<ProductItem> _orderProductList;
+    private Buyer _buyer;
 
     private void Start()
     {
-        EventBus.OnBuyerEnter += SetOrder;
+        _buyer = FindObjectOfType<Buyer>();
+        _buyer.OnBuyerEnter += SetOrder;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        EventBus.OnBuyerEnter -= SetOrder;
+        _buyer.OnBuyerEnter -= SetOrder;
     }
 
-    private List<ProductItem> GetProductList()
-    {
-        int productCount = Random.Range(_minProductAmount, _maxProductAmount + 1);
-
-        _orderProductList = new List<ProductItem>();
-
-        while (_orderProductList.Count < productCount)
-        {
-            int randomIndex = Random.Range(0, _storageContent.Products.Count);
-            var randomProduct = _storageContent.Products[randomIndex];
-
-            if (_orderProductList.Contains(randomProduct))
-            {
-                continue;
-            }
-            else
-            {
-                _orderProductList.Add(randomProduct);
-            }
-        }
-
-        return _orderProductList;
-    }
-
-    public void SetOrder()
+    private void SetOrder()
     {
         var productList = GetProductList();
+        //order.Products = productList;
         var order = new Order()
         {
             Products = productList
         };
 
-        EventBus.OnOrderCreated?.Invoke(order);
+        OnOrderCreated?.Invoke(order);
+    }
+    
+    private List<ProductItem> GetProductList()
+    {
+        var productCount = Random.Range(minProductAmount, maxProductAmount + 1);
+
+        _orderProductList = new List<ProductItem>();
+
+        while (_orderProductList.Count < productCount)
+        {
+            var randomIndex = Random.Range(0, storageContent.Products.Count);
+            var randomProduct = storageContent.Products[randomIndex];
+
+            if (_orderProductList.Contains(randomProduct))
+                continue;
+
+            _orderProductList.Add(randomProduct);
+        }
+
+        return _orderProductList;
     }
 }

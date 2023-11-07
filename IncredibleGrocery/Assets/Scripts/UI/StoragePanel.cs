@@ -3,35 +3,33 @@ using UnityEngine;
 
 public class StoragePanel : MonoBehaviour
 {
-    [Header("Transform settings")]   
-    [SerializeField] private Transform _startPosition;
-    [SerializeField] private Transform _endPosition;
+    [Header("Transform settings")] 
+    [SerializeField] private Transform startPosition;
+    [SerializeField] private Transform endPosition;
 
-    [Header("Animation settings")]
-    [SerializeField] private float _animationDuration;
-    [SerializeField] private Ease _ease;
+    [Header("Animation settings")] 
+    [SerializeField] private float animationDuration;
+    [SerializeField] private Ease ease;
+
+    private Vector3 _currentPosition;
 
     private void Start()
     {
-        transform.position = _startPosition.position;
+        transform.position = startPosition.position;
 
-        EventBus.OnOrderComplete += HidePanel;
-        EventBus.OnOrderViewCreated += ShowPanel;      
+        OrderManagerView.OnOrderViewCreated += MovePanel;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-       EventBus.OnOrderComplete -= HidePanel;
-       EventBus.OnOrderViewCreated -= ShowPanel;
+        OrderManagerView.OnOrderViewCreated -= MovePanel;
     }
 
-    private void ShowPanel()
+    public void MovePanel()
     {
-        transform.DOMove(_endPosition.position, _animationDuration).SetEase(_ease);      
-    }
+        var positionToMove = 
+            transform.position == startPosition.position ? endPosition.position : startPosition.position;
 
-    public void HidePanel()
-    {
-        transform.DOMove(_startPosition.position, _animationDuration).SetEase(_ease);
+        transform.DOMove(positionToMove, animationDuration).SetEase(ease);
     }
 }

@@ -1,26 +1,30 @@
 using DG.Tweening;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BuyerController : MonoBehaviour
 {
-    [Header("Objects to move")]
-    [SerializeField] private GameObject _buyerWalking;
-    [SerializeField] private GameObject _buyerMover;
+    [Header("Objects to move")] 
+    [SerializeField] private GameObject buyerWalking;
+    [SerializeField] private GameObject buyerMoving;
+    
+    [Header("Path points")] 
+    [SerializeField] private Transform entrancePoint;
+    [SerializeField] private Transform orderPoint;
+    [SerializeField] private Transform exitPoint;
 
-    [Header("Path points")]
-    [SerializeField] private Transform _entrancePoint;
-    [SerializeField] private Transform _orderPoint;
-    [SerializeField] private Transform _exitPoint;
+    [Header("Moving settings")] 
+    [SerializeField] private float timeToNewBuyer;
+    [SerializeField] private float timeToBuyerAppear;
+    [SerializeField] private float stepInterval;
+    [SerializeField] private float stepDuration;
+    [SerializeField] private float moveDuration;
+    [SerializeField] private Ease ease;
 
-    [Header("Moving settings")]
-    [SerializeField] private float _timeToNewBuyer;
-    [SerializeField] private float _timeToBuyerAppear;
-    [SerializeField] private float _stepInterval;
-    [SerializeField] private float _stepDuration;
-    [SerializeField] private float _moveDuration;
-    [SerializeField] private Ease _ease;
-
+    private Buyer _buyer;
+    
+    private Transform _positionToMove;
     private Sequence _sequence;
 
     private int _stepCount;
@@ -29,94 +33,65 @@ public class BuyerController : MonoBehaviour
 
     private void Start()
     {
-        _stepCount = (int)(_moveDuration / _stepInterval);
+        _buyer = GetComponent<Buyer>();
+        _buyer.OnBuyerExit += GetNewBuyer;
+        
+        SellManager.OnOrderComplete += Move;
+        
+        _stepCount = (int)(moveDuration / stepInterval);
 
         _movingForward = true;
 
-        SetNewBuyer();
-
-        EventBus.OnOrderComplete += MoveToExit;
-        EventBus.OnBuyerExit += SetNewBuyer;
+        GetNewBuyer();
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        EventBus.OnOrderComplete -= MoveToExit;
-        EventBus.OnBuyerExit -= SetNewBuyer;
+        _buyer.OnBuyerExit -= GetNewBuyer;
+        SellManager.OnOrderComplete -= Move;
     }
 
-    private void MoveToExit()
+    private void Move()
     {
-        Move(_movingForward);
-    }
-
-    private void Move(bool movingForward)
-    {
-        Transform positionToMove;
-
-        if (movingForward)
+        if (_movingForward)
         {
-            positionToMove = _orderPoint;
+            _positionToMove = orderPoint;
             _movingForward = false;
         }
         else
         {
-            positionToMove = _exitPoint;
+            _positionToMove = exitPoint;
             Flip();
         }
 
-        _sequence = DOTween.Sequence();
-
-        _sequence.Append(_buyerWalking.transform.DOLocalMoveY(_buyerWalking.transform.position.y, _stepDuration)
-            .SetLoops(_stepCount, LoopType.Yoyo).SetEase(_ease))
-            .Join(_buyerMover.transform.DOMove(positionToMove.position, _moveDuration)
-            .SetEase(_ease));
-
-        _sequence.Play().OnComplete(SequenceKill);
+        _sequence.Append(buyerWalking.transform.DOLocalMoveY(buyerWalking.transform.position.y, stepDuration)
+                .SetLoops(_stepCount, LoopType.Yoyo).SetEase(ease))
+                .Join(buyerMoving.transform.DOMove(_positionToMove.position, moveDuration)
+                .SetEase(ease));
     }
 
     [ContextMenu("Flip")]
     private void Flip()
     {
-        Vector3 localscale = _buyerWalking.transform.localScale;
-        localscale.x *= -1f;
-        _buyerWalking.transform.localScale = localscale;
+        var localScale = buyerWalking.transform.localScale;
+        localScale.x *= -1f;
+        buyerWalking.transform.localScale = localScale;
     }
 
-    private IEnumerator GetNewBuyer()
+    private IEnumerator SetNewBuyer()
     {
-        SetInactive();     
-        yield return new WaitForSeconds(_timeToNewBuyer);
-        SetActive();
+        buyerWalking.SetActive(false);
+        yield return new WaitForSeconds(timeToNewBuyer);
+        buyerWalking.SetActive(true);
 
-        SetPosition();
+        buyerMoving.transform.position = entrancePoint.position;
 
-        yield return new WaitForSeconds(_timeToBuyerAppear);
+        yield return new WaitForSeconds(timeToBuyerAppear);
 
-        Move(_movingForward);
+        Move();
     }
 
-    private void SetInactive()
-    {
-        _buyerWalking.SetActive(false);
-    }
-
-    private void SetActive()
-    {
-        _buyerWalking.SetActive(true);
-    }
-
-    private void SetPosition()
-    {
-        _buyerMover.transform.position = _entrancePoint.position;
-    }
-
-    private void SequenceKill()
-    {
-        _sequence.Kill();
-    }
-
-    public void SetNewBuyer()
+    private void GetNewBuyer()
     {
         if (!_movingForward)
         {
@@ -124,6 +99,6 @@ public class BuyerController : MonoBehaviour
             _movingForward = true;
         }
 
-        StartCoroutine(GetNewBuyer());
+        StartCoroutine(SetNewBuyer());
     }
 }

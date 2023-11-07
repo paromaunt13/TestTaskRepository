@@ -12,24 +12,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18169921893d0f8459947259475d2986, type: 3}
   m_Name: Storage Data
   m_EditorClassIdentifier: 
-  _products:
-  - {fileID: 11400000, guid: 625d199ec5be04e49aae816a04cbc032, type: 2}
-  - {fileID: 11400000, guid: 6623b1f665a85d143b80f219af132949, type: 2}
-  - {fileID: 11400000, guid: 82baadf6efa4f2543bee2ca2db2009b3, type: 2}
-  - {fileID: 11400000, guid: 39e6c324824be47419de7f948d0fc04b, type: 2}
-  - {fileID: 11400000, guid: c6c750f2e9d6ba449912eeceda7f735e, type: 2}
-  - {fileID: 11400000, guid: b3cc1b3ccb6d4ee4b888fecf095873eb, type: 2}
-  - {fileID: 11400000, guid: d5569116416283e45bd0ec214031332b, type: 2}
-  - {fileID: 11400000, guid: aaebffcb6c5760245a1bfb1f15f90045, type: 2}
-  - {fileID: 11400000, guid: a46e59bb71256d24587c12770506877f, type: 2}
-  - {fileID: 11400000, guid: 831ae6407d670424e83dc19e6a2f6cdd, type: 2}
-  - {fileID: 11400000, guid: 6ab8febbbab333242ab9d7eaa87b2a00, type: 2}
-  - {fileID: 11400000, guid: 6bc99af4d42fcf2419c75ffb6b943cdb, type: 2}
-  - {fileID: 11400000, guid: 9f0f0f0bdb5494b468df43bd7d57716d, type: 2}
-  - {fileID: 11400000, guid: 66ba166e3df48694682f8f39a2955fe2, type: 2}
-  - {fileID: 11400000, guid: 298498af2e138674ea6954d4fb28c2c8, type: 2}
-  - {fileID: 11400000, guid: 77cf92ea322f2b0439ab5238b9216259, type: 2}
-  - {fileID: 11400000, guid: eeb564e4434b53744be16e832b0edac7, type: 2}
-  - {fileID: 11400000, guid: 83ddb715b7b8aac4095fbed7748b2de4, type: 2}
-  - {fileID: 11400000, guid: 8e286857f3703f044b9b1edcd8f73b3f, type: 2}
-  - {fileID: 11400000, guid: c6333140bfd3301469cd28d5c121538f, type: 2}
+  <Products>k__BackingField:
+  - price: 10
+    icon: {fileID: 21300000, guid: f74f90b50f417ce4a9e439c2c826b083, type: 3}
+    productType: 0
+  - price: 10
+    icon: {fileID: 21300000, guid: 921c2a45fbe4cfd4fa8b609ae4653c1c, type: 3}
+    productType: 1
+  - price: 10
+    icon: {fileID: 21300000, guid: 6e67dd3a3d0b43c45b137438359945ac, type: 3}
+    productType: 7
+  - price: 10
+    icon: {fileID: 21300000, guid: d8529b82d6fb19041bdccbdec2d52f24, type: 3}
+    productType: 5
+  - price: 10
+    icon: {fileID: 21300000, guid: 746a96c9f59c31d4ea0e46e6d09e6837, type: 3}
+    productType: 4
+  - price: 10
+    icon: {fileID: 21300000, guid: 98827e4695b818449af66d879cc842ce, type: 3}
+    productType: 3
+  - price: 10
+    icon: {fileID: 21300000, guid: 20f3626093f1a1946bfd398dd7341121, type: 3}
+    productType: 12
+  - price: 10
+    icon: {fileID: 21300000, guid: 37264b65e6dd8da4aa8fa2a0b071dec7, type: 3}
+    productType: 6
+  - price: 10
+    icon: {fileID: 21300000, guid: 59c4c287982ab604ea1271fdc57397ba, type: 3}
+    productType: 10
+  - price: 10
+    icon: {fileID: 21300000, guid: 7e4c30e05cd594f408fab7d26966a14b, type: 3}
+    productType: 9
+  - price: 10
+    icon: {fileID: 21300000, guid: af75e2c69bb467946be80bc94f233f84, type: 3}
+    productType: 17
+  - price: 10
+    icon: {fileID: 21300000, guid: 6a94a87e6145e2640bf303335caff394, type: 3}
+    productType: 2
+  - price: 10
+    icon: {fileID: 21300000, guid: 17009cabf1c95f2428a2ad3fd27edc25, type: 3}
+    productType: 11
+  - price: 10
+    icon: {fileID: 21300000, guid: cebbee3fd60738e418070ce94959e4da, type: 3}
+    productType: 8
+  - price: 10
+    icon: {fileID: 21300000, guid: 8a7f5c92a19c2c64790bb95c7ef127ca, type: 3}
+    productType: 15
+  - price: 10
+    icon: {fileID: 21300000, guid: 521bd33a401da3548a6a6012cf81d967, type: 3}
+    productType: 16
+  - price: 10
+    icon: {fileID: 21300000, guid: 31f3f0f1e60f02546a879f0f95687dac, type: 3}
+    productType: 18
+  - price: 10
+    icon: {fileID: 21300000, guid: cbad7eb3254b1414c89e764848ece2c3, type: 3}
+    productType: 19
+  - price: 10
+    icon: {fileID: 21300000, guid: e2cf0b91a662fe04ea9a5ed9ec3f28ee, type: 3}
+    productType: 13
+  - price: 10
+    icon: {fileID: 21300000, guid: 5da9c3aa87cd9ec4ea54d16545963684, type: 3}
+    productType: 14

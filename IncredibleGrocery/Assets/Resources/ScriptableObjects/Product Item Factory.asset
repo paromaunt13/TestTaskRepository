@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60944c3e4b065324bab93900fcb35d92, type: 3}
   m_Name: Product Item Factory
   m_EditorClassIdentifier: 
-  _productPrefab: {fileID: 1641959230279648914, guid: 3193e0083f4f9aa4da0ee049d50ccbdb, type: 3}
+  productPrefab: {fileID: 1641959230279648914, guid: 3193e0083f4f9aa4da0ee049d50ccbdb, type: 3}

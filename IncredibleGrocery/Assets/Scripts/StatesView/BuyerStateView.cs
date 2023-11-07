@@ -1,76 +1,66 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BuyerStateView : MonoBehaviour
+public class BuyerStateView : ViewManager
 {
-    [SerializeField] private GameObject _reactionCloud;
+    [SerializeField] private GameObject reactionCloud;
+    [SerializeField] private Transform contentParent;
+    [SerializeField] private GameObject buyerReactionPrefab;
 
     [Header("View settings")]
-    [SerializeField] private Image _stateImage;
+    [SerializeField] private Sprite satisfiedIcon;
+    [SerializeField] private Sprite unsatisfiedIcon;
+    [SerializeField] private SoundsData soundsData;
+    [SerializeField] private float timeToCloudDisappear;
 
-    [SerializeField] private Sprite _satisfiedImage;
-    [SerializeField] private Sprite _unatisfiedImage;
-    
-    [SerializeField] private SoundsData _soundsData;
+    private Image _stateImage;
 
-    [SerializeField] private float _timeToCloudDisappear;
-
-    private BuyerState _buyerState;
+    private bool _isSatisfied;
 
     private void Start()
     {
-        EventBus.OnOrderComplete += SetReaction;
+        _stateImage = buyerReactionPrefab.GetComponent<Image>();
+        SellManager.OnOrderComplete += SetReaction;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        EventBus.OnOrderComplete -= SetReaction;
+        SellManager.OnOrderComplete -= SetReaction;
     }
 
     private void SetReaction()
     {
-        bool correctOrder = SellManager.CorrectOrder;
-
-        if (correctOrder)
-        {
-            _buyerState = BuyerState.Satisfied;
-        }
-        else
-        {
-            _buyerState = BuyerState.Unsatisfied;
-        }
-
-        UpdateStateView(_buyerState);
+        var correctOrder = SellManager.CorrectOrder;
+        _isSatisfied = correctOrder;
+ 
+        UpdateStateView(_isSatisfied);
 
         ShowReactionCloud();
     }
 
-    private void UpdateStateView(BuyerState buyerState)
+    private void UpdateStateView(bool isSatisfied)
     {
-        _stateImage.gameObject.SetActive(true);
-
-        switch (buyerState)
+        _stateImage.sprite = isSatisfied switch
         {
-            case BuyerState.Satisfied:
-                _stateImage.sprite = _satisfiedImage;
-                break;
-            case BuyerState.Unsatisfied:
-                _stateImage.sprite = _unatisfiedImage;
-                break;
-        }
+            true => satisfiedIcon,
+            false => unsatisfiedIcon
+        };
+
+        Instantiate(buyerReactionPrefab, contentParent);
     }
 
     private void ShowReactionCloud()
     {
-        ViewManager.Instance.SetCloudView(_reactionCloud.gameObject, _timeToCloudDisappear,
-            _soundsData.BubbleAppearSound, _soundsData.BubbleDisappearSound);
+        SetCloudView(reactionCloud.gameObject, timeToCloudDisappear,
+            soundsData.BubbleAppearSound, soundsData.BubbleDisappearSound);
     }
 
     [ContextMenu("Flip")]
     private void FlipCloud()
     {
-        Vector3 localscale = _reactionCloud.transform.localScale;
-        localscale.x *= -1f;
-        _reactionCloud.transform.localScale = localscale;
+        var localScale = reactionCloud.transform.localScale;
+        localScale.x *= -1f;
+        reactionCloud.transform.localScale = localScale;
     }
 }

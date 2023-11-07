@@ -1,17 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Product Item View Factory", menuName = "Factory/Product Item View Factory")]
 public class ProductItemViewFactory : ScriptableObject
 {
-    [SerializeField] private ProductItemView _productPrefab;
+    [SerializeField] private ProductItemView productPrefab;
 
     public ProductItemView GetProductView(ProductItem product, Transform parent)
     {
-        ProductItemView productView;
-
-        productView = Instantiate(_productPrefab, parent);
+        var productView = Instantiate(productPrefab, parent);
 
         productView.SetProductView(product);
 

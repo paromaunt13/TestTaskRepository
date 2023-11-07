@@ -3,23 +3,23 @@ using UnityEngine;
 
 public class PlayerMoneyView : MonoBehaviour
 {
-    [SerializeField] private string _textFormat;
-    [SerializeField] private PlayerMoney _playerMoney;
-    [SerializeField] private TMP_Text _moneyText;
+    [SerializeField] private string textFormat;
+    [SerializeField] private PlayerMoney playerMoney;
+    [SerializeField] private TMP_Text moneyText;
 
     private void Start()
     {
-        UpdateMoneyView(_playerMoney.MoneyAmount);
-
-        EventBus.OnMoneyValueChanged += UpdateMoneyView;
+        UpdateMoneyView(playerMoney.MoneyAmount);
+        PlayerMoney.OnMoneyValueChanged += UpdateMoneyView;
     }
-
-    private void OnDisable()
+    
+    private void OnDestroy()
     {
-        EventBus.OnMoneyValueChanged -= UpdateMoneyView;
+        PlayerMoney.OnMoneyValueChanged -= UpdateMoneyView;
     }
+
     private void UpdateMoneyView(int moneyAmount)
     {
-        _moneyText.text = string.Format(_textFormat, moneyAmount);
+        moneyText.text = string.Format(textFormat, moneyAmount);
     }
 }

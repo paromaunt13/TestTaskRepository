@@ -6,24 +6,23 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Image))]
 public class ProductItemView : MonoBehaviour, IPointerClickHandler
 {
-    [Header("View settings")]
-    [SerializeField] private Image _stateImage;
+    [Header("View settings")] 
+    [SerializeField] private Image stateImage;
 
-    [SerializeField] private Sprite _selectedImage;
-    [SerializeField] private Sprite _wrongImage;
+    [SerializeField] private Sprite selectedImage;
+    [SerializeField] private Sprite wrongImage;
 
-    [SerializeField] private SoundsData _soundsData;
+    [SerializeField] private SoundsData soundsData;
 
-    [Header("Transparency settings")]
-    [SerializeField] private float _unselectedTransparency;
-    [SerializeField] private float _selectedTransparency;
+    [Header("Transparency settings")] 
+    [SerializeField] private float unselectedTransparency;
+    [SerializeField] private float selectedTransparency;
 
     private Image _productImage;
 
     private Color _transparency;
 
-    private ProductViewState _productState;
-    public ProductViewState CurrentProductState => _productState;
+    public ProductViewState CurrentProductState { get; private set; }
 
     public ProductItem Product { get; private set; }
 
@@ -31,78 +30,66 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
 
     private void UpdateStateView(ProductViewState productState)
     {
-        _stateImage.gameObject.SetActive(true);
+        stateImage.gameObject.SetActive(true);
 
         switch (productState)
         {
             case ProductViewState.Selected:
-                _transparency.a = _selectedTransparency;
-                _stateImage.sprite = _selectedImage;
+                _transparency.a = selectedTransparency;
+                stateImage.sprite = selectedImage;
                 break;
             case ProductViewState.Unselected:
-                _transparency.a = _unselectedTransparency;
-                _stateImage.gameObject.SetActive(false);
+                _transparency.a = unselectedTransparency;
+                stateImage.gameObject.SetActive(false);
                 break;
             case ProductViewState.Correct:
-                _transparency.a = _selectedTransparency;
-                _stateImage.sprite = _selectedImage;
+                _transparency.a = selectedTransparency;
+                stateImage.sprite = selectedImage;
                 break;
             case ProductViewState.Wrong:
-                _transparency.a = _selectedTransparency;               
-                _stateImage.sprite = _wrongImage;             
+                _transparency.a = selectedTransparency;
+                stateImage.sprite = wrongImage;
                 break;
         }
 
-        _productImage.color = _transparency;        
+        _productImage.color = _transparency;
     }
-
-    private void Select()
-    {
-        _productState = ProductViewState.Selected;
-        UpdateStateView(_productState);
-    }
-
-    private void Unselect()
-    {
-        _productState = ProductViewState.Unselected;
-        UpdateStateView(_productState);
-    }
-
+    
     public void SetProductView(ProductItem product)
     {
         _productImage = GetComponent<Image>();
-        _productImage.sprite = product.Icon;
+        _productImage.sprite = product.icon;
 
         Product = product;
 
-        _stateImage.gameObject.SetActive(false);
+        stateImage.gameObject.SetActive(false);
 
-        _productState = ProductViewState.Unselected;
+        CurrentProductState = ProductViewState.Unselected;
 
         _transparency = _productImage.color;
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        AudioManager.Instance.PlaySound(_soundsData.ProductSelectSound);
+        AudioManager.Instance.PlaySound(soundsData.ProductSelectSound);
         Click?.Invoke(this);
     }
 
     public void SwitchState()
     {
-        if (_productState == ProductViewState.Unselected)
+        CurrentProductState = CurrentProductState switch
         {
-            Select();
-        }
-        else if (_productState == ProductViewState.Selected)
-        {
-            Unselect();
-        }
+            ProductViewState.Unselected => ProductViewState.Selected,
+            ProductViewState.Selected => ProductViewState.Unselected,
+            _ => CurrentProductState
+        };
+
+        UpdateStateView(CurrentProductState);
     }
 
     public void SetState(ProductViewState productState)
     {
-        _productState = productState;
-        UpdateStateView(_productState);
+        CurrentProductState = productState;
+        UpdateStateView(CurrentProductState);
     }
 }

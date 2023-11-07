@@ -1,21 +1,21 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OrderManagerView : MonoBehaviour
+public class OrderManagerView : ViewManager
 {
-    [SerializeField] private OrderManager _orderManager;
-    [SerializeField] private StoragePanel _storagePanel;
+    [Header("Order view")] 
+    [SerializeField] private GameObject orderCloud;
 
-    [Header("Order view")]
-    [SerializeField] private GameObject _orderCloud;  
-    [SerializeField] private Transform _contentParent;
-    [SerializeField] private ProductItemViewFactory _productItemFactory;
+    [SerializeField] private Transform contentParent;
+    [SerializeField] private ProductItemViewFactory productItemFactory;
 
-    [Header("View settings")]
-    [SerializeField] private SoundsData _soundsData;
-    [SerializeField] private float _timeToCloudDisappear;
+    [Header("View settings")] 
+    [SerializeField] private SoundsData soundsData;
+
+    [SerializeField] private float timeToCloudDisappear;
 
     private GridLayoutGroup _orderLayout;
 
@@ -23,49 +23,43 @@ public class OrderManagerView : MonoBehaviour
 
     private readonly List<ProductItemView> _orderItemsView;
 
+    public static Action OnOrderViewCreated;
+
     private void Start()
     {
-        _orderLayout = _contentParent.GetComponent<GridLayoutGroup>();
-        
-        EventBus.OnOrderCreated += SetProductView;
+        _orderLayout = contentParent.GetComponent<GridLayoutGroup>();
+
+        OrderManager.OnOrderCreated += SetProductView;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        EventBus.OnOrderCreated -= SetProductView;
+        OrderManager.OnOrderCreated -= SetProductView;
     }
 
     private IEnumerator ShowOrderCloud()
     {
-        ViewManager.Instance.SetCloudView(_orderCloud, _timeToCloudDisappear, 
-            _soundsData.BubbleAppearSound, _soundsData.BubbleDisappearSound);
+        SetCloudView(orderCloud, timeToCloudDisappear,
+            soundsData.BubbleAppearSound, soundsData.BubbleDisappearSound);
 
-        yield return new WaitForSeconds(_timeToCloudDisappear);
+        yield return new WaitForSeconds(timeToCloudDisappear);
+        
+        Clear(contentParent, _orderItemsView);;
 
-        EventBus.OnOrderViewCreated?.Invoke();
+        OnOrderViewCreated?.Invoke();
     }
-
-    private void ResizeCells(int productCount)
+    
+    private void SetProductView(Order order)
     {
-        ViewManager.Instance.Resize(productCount, _orderLayout);
-    }
-
-    private void Clear()
-    {
-        ViewManager.Instance.Clear(_contentParent, _orderItemsView);    
-    }
-
-    public void SetProductView(Order order)
-    {
-        Clear();
+        Clear(contentParent, _orderItemsView);
 
         _orderList = order.Products;
-
-        ResizeCells(_orderList.Count);
+    
+        //ResizeCells(_orderList.Count, _orderLayout);
 
         foreach (var product in _orderList)
         {
-            _productItemFactory.GetProductView(product, _contentParent);
+            productItemFactory.GetProductView(product, contentParent);
         }
 
         StartCoroutine(ShowOrderCloud());

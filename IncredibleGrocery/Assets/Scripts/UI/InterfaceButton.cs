@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class InterfaceButton : MonoBehaviour
 {
-    [SerializeField] protected SoundsData _soundsData;
+    [SerializeField] protected SoundsData soundsData;
 
     protected Button _button;
 
@@ -15,6 +15,6 @@ public class InterfaceButton : MonoBehaviour
 
     protected virtual void OnClick()
     {
-        AudioManager.Instance.PlaySound(_soundsData.ButtonClickSound);
+        AudioManager.Instance.PlaySound(soundsData.ButtonClickSound);
     }
 }

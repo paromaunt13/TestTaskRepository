@@ -4,25 +4,26 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SellManagerView : MonoBehaviour
+public class SellManagerView : ViewManager
 {
-    [SerializeField] private SellManager _sellManager;
+    [SerializeField] private SellManager sellManager;
 
-    [Header("UI view elements")]
-    [SerializeField] private Button _sellButton;
-    [SerializeField] private StoragePanel _storagePanel;
+    [Header("UI view elements")] 
+    [SerializeField] private Button sellButton;
+    [SerializeField] private StoragePanel storagePanel;
 
-    [Header("Sell view")]
-    [SerializeField] private GameObject _sellCloud;
-    [SerializeField] private Transform _contentParent;
+    [Header("Sell view")] 
+    [SerializeField] private GameObject sellCloud;
+    [SerializeField] private Transform contentParent;
 
-    [SerializeField] private ProductItemViewFactory _productItemFactory;
+    [SerializeField] private ProductItemViewFactory productItemFactory;
 
-    [Header("View animation settings")]
-    [SerializeField] private SoundsData _soundsData;
-    [SerializeField] private float _timeBeforeCheck;
-    [SerializeField] private float _timeToCloudDisappear;
-    [SerializeField] private float _timeBetweenChecks;
+    [Header("View animation settings")] 
+    [SerializeField] private SoundsData soundsData;
+
+    [SerializeField] private float timeBeforeCheck;
+    [SerializeField] private float timeToCloudDisappear;
+    [SerializeField] private float timeBetweenChecks;
 
     private GridLayoutGroup _orderLayout;
 
@@ -32,33 +33,31 @@ public class SellManagerView : MonoBehaviour
 
     private void Start()
     {
-        EventBus.OnOrderComplete += PlayMoneySound;
+        SellManager.OnOrderComplete += PlayMoneySound;
 
-        _sellButton.interactable = false;
+        sellButton.interactable = false;
 
-        _orderLayout = _contentParent.GetComponent<GridLayoutGroup>();
+        _orderLayout = contentParent.GetComponent<GridLayoutGroup>();
 
-        _sellButton.onClick.AddListener(OnButtonClick);
+        sellButton.onClick.AddListener(OnButtonClick);
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
-        EventBus.OnOrderComplete -= PlayMoneySound;
-        _sellButton.onClick.RemoveAllListeners();
+        SellManager.OnOrderComplete -= PlayMoneySound;
+        sellButton.onClick.RemoveAllListeners();
     }
 
     private void PlayMoneySound()
     {
-        if (_sellManager.CanReceiveMoney)
-        {
-            AudioManager.Instance.PlaySound(_soundsData.MoneyIncomeSound);
-        }       
+        if (sellManager.CanReceiveMoney)
+            AudioManager.Instance.PlaySound(soundsData.MoneyIncomeSound);
     }
 
     private void OnButtonClick()
     {
-        _storagePanel.HidePanel();
-        _sellButton.interactable = false;
+        storagePanel.MovePanel();
+        sellButton.interactable = false;
 
         SetSellProducts();
     }
@@ -75,14 +74,7 @@ public class SellManagerView : MonoBehaviour
 
     public void CheckSellButtonState(int selectsAmount, int currentSelects)
     {
-        if (currentSelects == selectsAmount)
-        {
-            _sellButton.interactable = true;
-        }
-        else
-        {
-            _sellButton.interactable = false;
-        }
+        sellButton.interactable = currentSelects == selectsAmount;
     }
 
     private void SetSellProducts()
@@ -100,58 +92,47 @@ public class SellManagerView : MonoBehaviour
 
     private IEnumerator SetSellProductsView()
     {
-        Clear();
+        Clear(contentParent, _productsToSellView);
 
-        ResizeCells(_productsToSell.Count);
+        //ResizeCells(_productsToSell.Count, _orderLayout);
 
         _productsViewToCheck = new List<ProductItemView>();
         foreach (var product in _productsToSell)
         {
-            var sellItemView = _productItemFactory.GetProductView(product, _contentParent);
+            var sellItemView = productItemFactory.GetProductView(product, contentParent);
             _productsViewToCheck.Add(sellItemView);
         }
 
         ShowSellCloud();
 
-        yield return new WaitForSeconds(_timeBeforeCheck);
+        yield return new WaitForSeconds(timeBeforeCheck);
 
         StartCoroutine(CheckProducts(_productsViewToCheck));
     }
 
     private IEnumerator CheckProducts(List<ProductItemView> productItemsView)
     {
-        int correctProductAmount = 0;
+        var correctProductAmount = 0;
 
         foreach (var productView in productItemsView)
         {
-            if (_sellManager.CheckProduct(productView.Product))
+            if (sellManager.CheckProduct(productView.Product))
             {
                 correctProductAmount++;
                 productView.SetState(ProductViewState.Correct);
             }
             else
-            {
                 productView.SetState(ProductViewState.Wrong);
-            }
-            yield return new WaitForSeconds(_timeBetweenChecks);
+
+            yield return new WaitForSeconds(timeBetweenChecks);
         }
-        
-        _sellManager.SetOrderCost(correctProductAmount);
+
+        sellManager.SetOrderCost(correctProductAmount);
     }
 
     private void ShowSellCloud()
     {
-        ViewManager.Instance.SetCloudView(_sellCloud, _timeToCloudDisappear,
-            _soundsData.BubbleAppearSound, _soundsData.BubbleDisappearSound);
-    }
-
-    private void ResizeCells(int productCount)
-    {
-        ViewManager.Instance.Resize(productCount, _orderLayout);
-    }
-
-    private void Clear()
-    {
-        ViewManager.Instance.Clear(_contentParent, _productsToSellView);
+        SetCloudView(sellCloud, timeToCloudDisappear,
+            soundsData.BubbleAppearSound, soundsData.BubbleDisappearSound);
     }
 }
