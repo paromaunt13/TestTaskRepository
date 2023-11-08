@@ -5,16 +5,13 @@ public class InterfaceButton : MonoBehaviour
 {
     [SerializeField] protected SoundsData soundsData;
 
-    protected Button _button;
+    public Button Button;
 
-    private void Start()
+    private void Awake()
     {
-        _button = GetComponent<Button>();
-        _button.onClick.AddListener(OnClick);
+        Button = GetComponent<Button>();
+        Button.onClick.AddListener(OnClick);
     }
 
-    protected virtual void OnClick()
-    {
-        AudioManager.Instance.PlaySound(soundsData.ButtonClickSound);
-    }
+    protected  void OnClick() => AudioManager.Instance.PlaySound(soundsData.ButtonClickSound);
 }

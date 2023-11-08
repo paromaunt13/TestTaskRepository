@@ -4,12 +4,10 @@ using UnityEngine.UI;
 
 public class MainMenuButton : InterfaceButton
 {
-    private Button _button;
-
     private void Start()
     {
-        _button = GetComponent<Button>();
-        _button.onClick.AddListener(LoadMainMenu);
+        Button = GetComponent<Button>();
+        Button.onClick.AddListener(LoadMainMenu);
     }
 
     private void LoadMainMenu()

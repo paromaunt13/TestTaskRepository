@@ -17,19 +17,7 @@ public class PlayerMoney : MonoBehaviour
         Instance = this;
 
         LoadMoneyData();
-        //CheckForMoney();      
     }
-
-    // private void CheckForMoney()
-    // {
-    //     if (PersistentDataManager.HasMoneyKey)
-    //         LoadMoneyData();
-    //     else
-    //     {
-    //         MoneyAmount = 0;
-    //         OnMoneyValueChanged?.Invoke(MoneyAmount);
-    //     }
-    // }
 
     private void LoadMoneyData()
     {

@@ -5,7 +5,10 @@ public class PersistentDataManager
     private const string SoundKey = "SoundEnabled";
     private const string MusicKey = "MusicEnabled";
     private const string MoneyKey = "PlayerMoney";
+    
+    private const string FirstLaunchKey = "FirstLaunch";
 
+    private static bool? _isFirstLaunch;
     private static bool? _musicState;
     private static bool? _soundState;
     
@@ -56,6 +59,22 @@ public class PersistentDataManager
         {
             _moneyAmount = value;
             PlayerPrefs.SetInt(MoneyKey, _moneyAmount.Value);
+            PlayerPrefs.Save();
+        }
+    }
+
+    public static bool FirstLaunch
+    {
+        get
+        {
+            if (!PlayerPrefs.HasKey(FirstLaunchKey)) return true;
+            _isFirstLaunch ??= PlayerPrefs.GetInt(FirstLaunchKey, 0) == 1;
+            return _isFirstLaunch.Value;
+        }
+        set
+        {
+            _isFirstLaunch = value;
+            PlayerPrefs.SetInt(FirstLaunchKey, _isFirstLaunch.Value ? 1 : 0);
             PlayerPrefs.Save();
         }
     }

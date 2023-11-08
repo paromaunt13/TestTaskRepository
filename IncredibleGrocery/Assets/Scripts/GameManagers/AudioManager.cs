@@ -2,8 +2,10 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Serialization;
 
+
 public class AudioManager : MonoBehaviour
 {
+    
     public static AudioManager Instance;
 
     [SerializeField] private AudioSource backgroundMusic;
@@ -22,6 +24,7 @@ public class AudioManager : MonoBehaviour
         
         Instance = this;
 
+        //DontDestroyOnLoad((this.gameObject));
         _audioSource = GetComponent<AudioSource>();
 
         LoadSettings();

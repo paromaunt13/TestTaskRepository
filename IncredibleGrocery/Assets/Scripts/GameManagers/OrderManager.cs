@@ -29,7 +29,6 @@ public class OrderManager : MonoBehaviour
     private void SetOrder()
     {
         var productList = GetProductList();
-        //order.Products = productList;
         var order = new Order()
         {
             Products = productList
