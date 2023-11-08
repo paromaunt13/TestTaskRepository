@@ -70,7 +70,6 @@ public class PersistentDataManager
             _moneyAmount ??= PlayerPrefs.GetInt(MoneyKey);
             return _moneyAmount.Value;
         }
-
         set
         {
             _moneyAmount = value;
