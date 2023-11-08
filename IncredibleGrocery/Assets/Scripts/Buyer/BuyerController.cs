@@ -7,8 +7,7 @@ public class BuyerController : MonoBehaviour
 {
     [Header("Objects to move")] 
     [SerializeField] private GameObject buyerWalking;
-    [SerializeField] private GameObject buyerMoving;
-    
+
     [Header("Path points")] 
     [SerializeField] private Transform entrancePoint;
     [SerializeField] private Transform orderPoint;
@@ -66,7 +65,7 @@ public class BuyerController : MonoBehaviour
 
         _sequence.Append(buyerWalking.transform.DOLocalMoveY(buyerWalking.transform.position.y, stepDuration)
                 .SetLoops(_stepCount, LoopType.Yoyo).SetEase(ease))
-                .Join(buyerMoving.transform.DOMove(_positionToMove.position, moveDuration)
+                .Join(transform.DOMove(_positionToMove.position, moveDuration)
                 .SetEase(ease));
     }
 
@@ -84,7 +83,7 @@ public class BuyerController : MonoBehaviour
         yield return new WaitForSeconds(timeToNewBuyer);
         buyerWalking.SetActive(true);
 
-        buyerMoving.transform.position = entrancePoint.position;
+        transform.position = entrancePoint.position;
 
         yield return new WaitForSeconds(timeToBuyerAppear);
 

@@ -8,11 +8,8 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
 {
     [Header("View settings")] 
     [SerializeField] private Image stateImage;
-
     [SerializeField] private Sprite selectedImage;
     [SerializeField] private Sprite wrongImage;
-
-    [SerializeField] private SoundsData soundsData;
 
     [Header("Transparency settings")] 
     [SerializeField] private float unselectedTransparency;
@@ -51,7 +48,6 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
                 stateImage.sprite = wrongImage;
                 break;
         }
-
         _productImage.color = _transparency;
     }
     
@@ -59,7 +55,7 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
     {
         _productImage = GetComponent<Image>();
         _productImage.sprite = product.icon;
-
+        
         Product = product;
 
         stateImage.gameObject.SetActive(false);
@@ -71,7 +67,7 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        AudioManager.Instance.PlaySound(soundsData.ProductSelectSound);
+        AudioManager.Instance.PlaySound(SoundType.ProductSelectSound);
         Click?.Invoke(this);
     }
 
@@ -83,7 +79,7 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
             ProductViewState.Selected => ProductViewState.Unselected,
             _ => CurrentProductState
         };
-
+        
         UpdateStateView(CurrentProductState);
     }
 

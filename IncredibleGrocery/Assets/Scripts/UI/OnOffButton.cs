@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class OnOffButton : AudioButton
 {
@@ -15,7 +14,6 @@ public class OnOffButton : AudioButton
     
     public void SetButtonState(bool isEnabled)
     {
-        if (_isEnabled == isEnabled) return;
         _isEnabled = isEnabled;
         Button.image.sprite = _isEnabled ? enabledImage : disabledImage;
         buttonText.text = _isEnabled ? OnText : OffText;

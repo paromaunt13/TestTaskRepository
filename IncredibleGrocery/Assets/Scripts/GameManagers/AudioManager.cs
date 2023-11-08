@@ -1,16 +1,18 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.Serialization;
-
 
 public class AudioManager : MonoBehaviour
 {
-    
     public static AudioManager Instance;
 
     [SerializeField] private AudioSource backgroundMusic;
     [SerializeField] private AudioMixerGroup soundGroup;
     [SerializeField] private AudioMixerGroup backgroundMusicGroup;
+
+    [SerializeField] private SoundsData soundsData;
+    
+   private Dictionary<SoundType, AudioClip> _soundsDictionary;
 
     private AudioSource _audioSource;
 
@@ -23,11 +25,9 @@ public class AudioManager : MonoBehaviour
         get => _musicEnabled;
         set
         {
-            if (_musicEnabled != value)
-            {
-                _musicEnabled = value;
-                PlayBackgroundMusic(MusicEnabled);
-            }
+            if (_musicEnabled == value) return;
+            _musicEnabled = value;
+            PlayBackgroundMusic(MusicEnabled);
         }
     }
 
@@ -35,10 +35,16 @@ public class AudioManager : MonoBehaviour
     {
         if (Instance != null)
             Destroy(gameObject);
-        
         Instance = this;
+        
         _audioSource = GetComponent<AudioSource>();
         LoadSettings();
+        
+        _soundsDictionary = new Dictionary<SoundType, AudioClip>();
+        foreach (var soundData in soundsData.SoundsDataList)
+        {
+            _soundsDictionary[soundData.soundType] = soundData.audioClip;
+        }
     }
 
     private void PlayBackgroundMusic(bool musicEnabled)
@@ -65,9 +71,12 @@ public class AudioManager : MonoBehaviour
         PersistentDataManager.SoundState = SoundEnabled;
     }
 
-    public void PlaySound(AudioClip audioClip)
+    public void PlaySound(SoundType soundType)
     {
         if (!SoundEnabled) return;
+        if (!_soundsDictionary.ContainsKey(soundType)) return;
+        
+        var audioClip = _soundsDictionary[soundType];
         _audioSource.outputAudioMixerGroup = soundGroup;
         _audioSource.PlayOneShot(audioClip);
     }

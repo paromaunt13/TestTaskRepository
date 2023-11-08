@@ -11,12 +11,9 @@ public class StoragePanel : MonoBehaviour
     [SerializeField] private float animationDuration;
     [SerializeField] private Ease ease;
 
-    private Vector3 _currentPosition;
-
     private void Start()
     {
         transform.position = startPosition.position;
-
         OrderManagerView.OnOrderViewCreated += MovePanel;
     }
 
@@ -27,9 +24,7 @@ public class StoragePanel : MonoBehaviour
 
     public void MovePanel()
     {
-        var positionToMove = 
-            transform.position == startPosition.position ? endPosition.position : startPosition.position;
-
+        var positionToMove = transform.position == startPosition.position ? endPosition.position : startPosition.position;
         transform.DOMove(positionToMove, animationDuration).SetEase(ease);
     }
 }

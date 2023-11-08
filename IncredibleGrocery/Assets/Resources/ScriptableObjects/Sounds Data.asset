@@ -12,8 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3b71eba44c125744889876bc78f90025, type: 3}
   m_Name: Sounds Data
   m_EditorClassIdentifier: 
-  <ButtonClickSound>k__BackingField: {fileID: 8300000, guid: 36d9dca61b2b24746a24ebe901f1fe1e, type: 3}
-  <BubbleAppearSound>k__BackingField: {fileID: 8300000, guid: 8453372e6ed21114d932700140bc02b8, type: 3}
-  <BubbleDisappearSound>k__BackingField: {fileID: 8300000, guid: f101597a2424c144b9bf0b17f3a2268c, type: 3}
-  <ProductSelectSound>k__BackingField: {fileID: 8300000, guid: 233ccdf403605b04c9351daa57223ac4, type: 3}
-  <MoneyIncomeSound>k__BackingField: {fileID: 8300000, guid: d9a9f240540e78c489a7f264f650e592, type: 3}
+  <SoundsDataList>k__BackingField:
+  - soundType: 0
+    audioClip: {fileID: 8300000, guid: 36d9dca61b2b24746a24ebe901f1fe1e, type: 3}
+  - soundType: 1
+    audioClip: {fileID: 8300000, guid: 8453372e6ed21114d932700140bc02b8, type: 3}
+  - soundType: 2
+    audioClip: {fileID: 8300000, guid: f101597a2424c144b9bf0b17f3a2268c, type: 3}
+  - soundType: 3
+    audioClip: {fileID: 8300000, guid: d9a9f240540e78c489a7f264f650e592, type: 3}
+  - soundType: 4
+    audioClip: {fileID: 8300000, guid: 233ccdf403605b04c9351daa57223ac4, type: 3}

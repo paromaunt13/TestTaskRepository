@@ -10,28 +10,20 @@ public class SellManager : MonoBehaviour
 
     private Order _order = new();
 
-    private int _totalOrderCost;
     private int _productPrice;
 
     public static Action OnOrderComplete;
     
     public static bool CorrectOrder { get; private set; }
-    public bool CanReceiveMoney { get; private set; }
-
+    
     private void Start()
     {
         OrderManager.OnOrderCreated += SetSellList;
-        ResetValues();
     }
 
     private void OnDestroy()
     {
         OrderManager.OnOrderCreated -= SetSellList;
-    }
-
-    private void ResetValues()
-    {
-        _totalOrderCost = 0;
     }
 
     private void SetSellList(Order order)
@@ -48,28 +40,15 @@ public class SellManager : MonoBehaviour
 
     public void SetOrderCost(int correctProductAmount)
     {
-        ResetValues();
+        var correctOrder = correctProductAmount == _order.Products.Count;
         
-        if (correctProductAmount != _order.Products.Count)
+        var canReceiveMoney = correctProductAmount != 0;
+        if (canReceiveMoney)
         {
-            if (correctProductAmount == 0)
-                CanReceiveMoney = false;
-            else
-            {
-                CanReceiveMoney = true;
-                _totalOrderCost = _productPrice * correctProductAmount;
-            }
-            CorrectOrder = false;
+            var totalOrderCost = _productPrice * correctProductAmount * (correctOrder ? costMultiplier : 1);
+            PlayerMoney.Instance.AddMoney(totalOrderCost);
+            AudioManager.Instance.PlaySound(SoundType.MoneyReceiveSound);
         }
-        else
-        {
-            CanReceiveMoney = true;
-            CorrectOrder = true;
-
-            _totalOrderCost = _productPrice * correctProductAmount * costMultiplier;
-        }
-
-        PlayerMoney.Instance.AddMoney(_totalOrderCost);
 
         OnOrderComplete?.Invoke();
     }

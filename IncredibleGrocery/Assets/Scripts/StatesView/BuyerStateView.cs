@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,24 +35,13 @@ public class BuyerStateView : ViewManager
  
         UpdateStateView(_isSatisfied);
 
-        ShowReactionCloud();
+        SetCloudView(reactionCloud.gameObject, timeToCloudDisappear);
     }
 
     private void UpdateStateView(bool isSatisfied)
     {
-        _stateImage.sprite = isSatisfied switch
-        {
-            true => satisfiedIcon,
-            false => unsatisfiedIcon
-        };
-
+        _stateImage.sprite = isSatisfied ? satisfiedIcon : unsatisfiedIcon; 
         Instantiate(buyerReactionPrefab, contentParent);
-    }
-
-    private void ShowReactionCloud()
-    {
-        SetCloudView(reactionCloud.gameObject, timeToCloudDisappear,
-            soundsData.BubbleAppearSound, soundsData.BubbleDisappearSound);
     }
 
     [ContextMenu("Flip")]
