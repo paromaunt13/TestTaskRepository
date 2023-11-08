@@ -13,9 +13,23 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioMixerGroup backgroundMusicGroup;
 
     private AudioSource _audioSource;
+
+    private bool _musicEnabled;
     
-    public bool SoundEnabled { get; private set; }
-    public bool MusicEnabled { get; private set; }
+    public bool SoundEnabled { get; set; }
+
+    public bool MusicEnabled
+    {
+        get => _musicEnabled;
+        set
+        {
+            if (_musicEnabled != value)
+            {
+                _musicEnabled = value;
+                PlayBackgroundMusic(MusicEnabled);
+            }
+        }
+    }
 
     private void Awake()
     {
@@ -23,13 +37,8 @@ public class AudioManager : MonoBehaviour
             Destroy(gameObject);
         
         Instance = this;
-
-        //DontDestroyOnLoad((this.gameObject));
         _audioSource = GetComponent<AudioSource>();
-
         LoadSettings();
-
-        PlayBackgroundMusic(MusicEnabled);
     }
 
     private void PlayBackgroundMusic(bool musicEnabled)
@@ -61,17 +70,5 @@ public class AudioManager : MonoBehaviour
         if (!SoundEnabled) return;
         _audioSource.outputAudioMixerGroup = soundGroup;
         _audioSource.PlayOneShot(audioClip);
-    }
-
-    public void SwitchSoundState(bool enabled)
-    {
-        SoundEnabled = enabled;
-    }
-
-    public void SwitchMusicState(bool enabled)
-    {
-        MusicEnabled = enabled;
-
-        PlayBackgroundMusic(MusicEnabled);
     }
 }
