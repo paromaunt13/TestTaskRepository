@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SellManagerView : ViewManager
+public class SellView : ViewManager
 {
     [SerializeField] private SellManager sellManager;
 
@@ -97,6 +97,6 @@ public class SellManagerView : ViewManager
             yield return new WaitForSeconds(timeBetweenChecks);
         }
 
-        sellManager.SetOrderCost(correctProductAmount);
+        sellManager.SetOrderFinalCost(correctProductAmount);
     }
 }

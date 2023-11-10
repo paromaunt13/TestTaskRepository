@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class StorageView : MonoBehaviour
@@ -7,7 +6,7 @@ public class StorageView : MonoBehaviour
     [SerializeField] private StorageData storageData;
     [SerializeField] private ProductItemViewFactory productItemFactory;
     [SerializeField] private Transform contentParent;
-    [SerializeField] private SellManagerView sellManagerView;
+    [SerializeField] private SellView sellView;
 
     private readonly List<ProductItemView> _productItemsView = new();
     
@@ -16,15 +15,13 @@ public class StorageView : MonoBehaviour
 
     private void Start()
     {
-        OrderManager.OnOrderCreated += SetAvailableSelects;
-        SellManager.OnOrderComplete += ResetViewValues;
+        OrderZoneManager.OnOrderCreated += SetAvailableSelects;
         SetProductsView(storageData.Products);
     }
 
     private void OnDestroy()
     {
-        OrderManager.OnOrderCreated -= SetAvailableSelects;
-        SellManager.OnOrderComplete -= ResetViewValues;
+        OrderZoneManager.OnOrderCreated -= SetAvailableSelects;
     }
 
     private void ResetViewValues()
@@ -38,35 +35,35 @@ public class StorageView : MonoBehaviour
 
     private void SetAvailableSelects(Order order)
     {
+        ResetViewValues();
         _selectsAmount = order.Products.Count;
     }
 
     private void OnProductViewClick(ProductItemView productItemView)
     {
         productItemView.SwitchState();
-
+        
         if (productItemView.CurrentProductState == ProductViewState.Selected)
         {
             _currentSelects++;
-            sellManagerView.AddProductSellView(productItemView);
+            sellView.AddProductSellView(productItemView);
         }
         else if (productItemView.CurrentProductState == ProductViewState.Unselected)
         {
             _currentSelects--;
-            sellManagerView.RemoveProductSellView(productItemView);
+            sellView.RemoveProductSellView(productItemView);
         }
-
-        sellManagerView.SetSellButtonState(_selectsAmount, _currentSelects);
+        
+        sellView.SetSellButtonState(_selectsAmount, _currentSelects);
     }
 
     private void Clear()
     {
         foreach (var item in _productItemsView)
         {
-            //item.Click -= OnProductViewClick;
+            item.Click -= OnProductViewClick;
             Destroy(item.gameObject);
         }
-
         _productItemsView.Clear();
     }
 

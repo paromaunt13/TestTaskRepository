@@ -3,41 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class OrderManager : MonoBehaviour
+public class OrderZoneManager : MonoBehaviour
 {
+    [SerializeField] private OrderZone orderZone;
     [SerializeField] private StorageData storageContent;
 
     [SerializeField] private int minProductAmount;
     [SerializeField] private int maxProductAmount;
 
-    public static Action<Order> OnOrderCreated;
+    private BuyerView _buyerView;
     
     private List<ProductItem> _orderProductList;
-    private Buyer _buyer;
 
+    public static Action<Order> OnOrderCreated;
+    public  Action<GameObject, Transform> OnBuyerDataCreated;
+    
     private void Start()
     {
-        _buyer = FindObjectOfType<Buyer>();
-        _buyer.OnBuyerEnter += SetOrder;
-    }
-
-    private void OnDestroy()
-    {
-        _buyer.OnBuyerEnter -= SetOrder;
-    }
-
-    private void SetOrder()
-    {
-        var productList = GetProductList();
-        var order = new Order()
-        {
-            Products = productList
-        };
-
-        OnOrderCreated?.Invoke(order);
+        orderZone.OnBuyerEnter += SetBuyerData;
     }
     
-    private List<ProductItem> GetProductList()
+    private void OnDestroy()
+    {
+        orderZone.OnBuyerEnter -= SetBuyerData;
+    }
+
+    private void SetBuyerData(Buyer buyer)
+    {
+        _buyerView = buyer.GetComponent<BuyerView>();
+        
+        var productList = GetProductList();
+        var order = buyer.MakeOrder();
+        order.Products.AddRange(productList);
+        
+        OnBuyerDataCreated?.Invoke(_buyerView.BuyerCloud, _buyerView.ParentContent);
+        OnOrderCreated?.Invoke(order);
+    }
+
+    private IEnumerable<ProductItem> GetProductList()
     {
         var productCount = Random.Range(minProductAmount, maxProductAmount + 1);
 

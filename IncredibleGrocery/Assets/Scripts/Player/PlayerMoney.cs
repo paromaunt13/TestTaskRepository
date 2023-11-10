@@ -17,6 +17,7 @@ public class PlayerMoney : MonoBehaviour
     public void AddMoney(int moneyAmount)
     {
         PersistentDataManager.MoneyAmount += moneyAmount;
+        AudioManager.Instance.PlaySound(SoundType.MoneyReceiveSound);
         OnMoneyValueChanged?.Invoke(PersistentDataManager.MoneyAmount);
     }
 }

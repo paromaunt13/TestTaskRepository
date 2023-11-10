@@ -10,46 +10,47 @@ public class SellManager : MonoBehaviour
 
     private Order _order = new();
 
-    private int _productPrice;
+    private int _totalOrderCost;
 
-    public static Action OnOrderComplete;
-    
-    public static bool CorrectOrder { get; private set; }
+    public static Action<bool> OnOrderComplete;
     
     private void Start()
     {
-        OrderManager.OnOrderCreated += SetSellList;
+        OrderZoneManager.OnOrderCreated += SetSellList;
     }
 
     private void OnDestroy()
     {
-        OrderManager.OnOrderCreated -= SetSellList;
+        OrderZoneManager.OnOrderCreated -= SetSellList;
     }
 
     private void SetSellList(Order order)
     {
+        _totalOrderCost = 0;
         _order = order;
         _sellList = order.Products;
     }
 
     public bool CheckProduct(ProductItem product)
     {
-        _productPrice = product.price;
-        return _sellList.Contains(product);
+        var hasProduct = _sellList.Contains(product);
+        if (hasProduct) 
+            _totalOrderCost += product.price;
+        return hasProduct;
     }
 
-    public void SetOrderCost(int correctProductAmount)
+    public void SetOrderFinalCost(int correctProductAmount)
     {
         var correctOrder = correctProductAmount == _order.Products.Count;
         
         var canReceiveMoney = correctProductAmount != 0;
+        
         if (canReceiveMoney)
         {
-            var totalOrderCost = _productPrice * correctProductAmount * (correctOrder ? costMultiplier : 1);
-            PlayerMoney.Instance.AddMoney(totalOrderCost);
-            AudioManager.Instance.PlaySound(SoundType.MoneyReceiveSound);
+            _totalOrderCost *=   correctOrder ? costMultiplier : 1;
+            PlayerMoney.Instance.AddMoney(_totalOrderCost);
         }
 
-        OnOrderComplete?.Invoke();
+        OnOrderComplete?.Invoke(correctOrder);
     }
 }

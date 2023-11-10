@@ -14,12 +14,14 @@ public class StoragePanel : MonoBehaviour
     private void Start()
     {
         transform.position = startPosition.position;
-        OrderManagerView.OnOrderViewCreated += MovePanel;
+        OrderView.OnOrderViewCreated += MovePanel;
+        OrderZone.OnBuyerLeaved += MovePanel;
     }
 
     private void OnDestroy()
     {
-        OrderManagerView.OnOrderViewCreated -= MovePanel;
+        OrderView.OnOrderViewCreated -= MovePanel;
+        OrderZone.OnBuyerLeaved -= MovePanel;
     }
 
     public void MovePanel()
