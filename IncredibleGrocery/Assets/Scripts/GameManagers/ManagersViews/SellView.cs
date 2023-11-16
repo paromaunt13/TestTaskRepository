@@ -26,12 +26,14 @@ public class SellView : ViewManager
     private readonly List<ProductItemView> _productsToSellView = new();
     private List<ProductItemView> _productsViewToCheck = new();
 
+    public static Action OnSellListSet;
+    
     private void Start()
     {
         sellButton.Button.interactable = false;
         sellButton.Button.onClick.AddListener(() =>
         {
-            storagePanel.MovePanel();
+            //storagePanel.MovePanel();
             sellButton.Button.interactable = false;
             SetSellProducts();
         });
@@ -62,6 +64,7 @@ public class SellView : ViewManager
             _productsToSell.Add(productView.Product);
         }
         StartCoroutine(SetSellProductsView());
+        OnSellListSet?.Invoke();
     }
 
     private IEnumerator SetSellProductsView()

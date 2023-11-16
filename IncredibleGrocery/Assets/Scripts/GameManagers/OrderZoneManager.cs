@@ -5,6 +5,7 @@ using Random = UnityEngine.Random;
 
 public class OrderZoneManager : MonoBehaviour
 {
+    [SerializeField] private SellManager sellManager;
     [SerializeField] private OrderZone orderZone;
     [SerializeField] private StorageData storageContent;
 
@@ -12,23 +13,30 @@ public class OrderZoneManager : MonoBehaviour
     [SerializeField] private int maxProductAmount;
 
     private BuyerView _buyerView;
-    
+
     private List<ProductItem> _orderProductList;
 
-    public static Action<Order> OnOrderCreated;
-    public  Action<GameObject, Transform> OnBuyerDataCreated;
-    
+    public  Action<Order> OnOrderCreated;
+    public Action<GameObject, Transform, Order> OnBuyerDataCreated;
+
     private void Start()
     {
+        sellManager.OnOrderComplete += CompleteOrder;
         orderZone.OnBuyerEnter += SetBuyerData;
     }
-    
+
     private void OnDestroy()
     {
+        sellManager.OnOrderComplete -= CompleteOrder;
         orderZone.OnBuyerEnter -= SetBuyerData;
     }
 
-    private void SetBuyerData(Buyer buyer)
+    private void CompleteOrder(bool correctOrder)
+    {
+        _buyerView.SetReaction(correctOrder);
+    }
+
+private void SetBuyerData(Buyer buyer)
     {
         _buyerView = buyer.GetComponent<BuyerView>();
         
@@ -36,7 +44,7 @@ public class OrderZoneManager : MonoBehaviour
         var order = buyer.MakeOrder();
         order.Products.AddRange(productList);
         
-        OnBuyerDataCreated?.Invoke(_buyerView.BuyerCloud, _buyerView.ParentContent);
+        OnBuyerDataCreated?.Invoke(_buyerView.BuyerCloud, _buyerView.ParentContent, order);
         OnOrderCreated?.Invoke(order);
     }
 

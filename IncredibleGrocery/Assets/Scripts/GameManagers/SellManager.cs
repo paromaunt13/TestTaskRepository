@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class SellManager : MonoBehaviour
 {
+    [SerializeField] private OrderZoneManager orderZoneManager;
     [SerializeField] private int costMultiplier;
 
     private List<ProductItem> _sellList = new();
@@ -12,16 +13,16 @@ public class SellManager : MonoBehaviour
 
     private int _totalOrderCost;
 
-    public static Action<bool> OnOrderComplete;
+    public Action<bool> OnOrderComplete;
     
     private void Start()
     {
-        OrderZoneManager.OnOrderCreated += SetSellList;
+        orderZoneManager.OnOrderCreated += SetSellList;
     }
 
     private void OnDestroy()
     {
-        OrderZoneManager.OnOrderCreated -= SetSellList;
+        orderZoneManager.OnOrderCreated -= SetSellList;
     }
 
     private void SetSellList(Order order)

@@ -4,7 +4,7 @@ using UnityEngine;
 public class OrderZone : MonoBehaviour
 {
     public Action<Buyer> OnBuyerEnter;
-    public static Action OnBuyerLeaved;
+    public Action<Buyer> OnBuyerLeaved;
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.TryGetComponent<Buyer>(out var buyer))
@@ -13,7 +13,7 @@ public class OrderZone : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.GetComponent<Buyer>())
-            OnBuyerLeaved?.Invoke();
+        if (other.TryGetComponent<Buyer>(out var buyer))
+            OnBuyerLeaved?.Invoke(buyer);
     }
 }

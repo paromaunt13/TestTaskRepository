@@ -20,25 +20,23 @@ public class OrderView : ViewManager
 
     private void Start()
     {
-        OrderZoneManager.OnOrderCreated += SetOrderView;
-        orderZoneManager.OnBuyerDataCreated += GetViewData;
+        orderZoneManager.OnBuyerDataCreated += SetViewData;
     }
 
-    private void GetViewData(GameObject orderCloud, Transform contentParent)
+    private void SetViewData(GameObject orderCloud, Transform contentParent, Order order)
     {
         _orderCloud = orderCloud;
         _contentParent = contentParent;
+        SetOrderView(order);
     }
 
     private void OnDestroy()
     {
-        OrderZoneManager.OnOrderCreated -= SetOrderView;
-        orderZoneManager.OnBuyerDataCreated += GetViewData;
+        orderZoneManager.OnBuyerDataCreated += SetViewData;
     }
 
     private IEnumerator ShowOrderCloud()
     {
-        //var orderCloud = orderZoneManager.BuyerView.BuyerCloud;
         SetCloudView(_orderCloud, timeToCloudDisappear);
 
         yield return new WaitForSeconds(timeToCloudDisappear);
@@ -50,7 +48,6 @@ public class OrderView : ViewManager
 
     private void SetOrderView(Order order)
     {
-        //var contentParent =  orderZoneManager.BuyerView.ParentContent;
         Clear(_contentParent, _orderItemsView);
     
         _orderList = order.Products;

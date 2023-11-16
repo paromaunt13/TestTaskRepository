@@ -204,7 +204,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3569784327616810241
 RectTransform:
   m_ObjectHideFlags: 0
@@ -436,6 +436,7 @@ GameObject:
   - component: {fileID: 3569784327821911730}
   - component: {fileID: 3569784327821911733}
   - component: {fileID: 3569784327821911732}
+  - component: {fileID: -3613640830265980203}
   m_Layer: 7
   m_Name: Buyer
   m_TagString: Untagged
@@ -520,9 +521,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buyerWalking: {fileID: 3569784328153901536}
-  stepInterval: 0.25
   stepDuration: 0.25
-  moveDuration: 2
+  moveDurationToEntrance: 1
+  moveDurationToQueuePoint: 2
+  moveDurationInQueue: 1
+  moveDurationToExit: 2
   ease: 1
 --- !u!114 &3569784327821911732
 MonoBehaviour:
@@ -540,11 +543,22 @@ MonoBehaviour:
   buyerCloud: {fileID: 3569784326961296649}
   parentContent: {fileID: 3569784326791750975}
   buyerReactionPrefab: {fileID: 5089639455861990538, guid: ac7a2cf2692e90d4c89d274feebf5b87, type: 3}
-  minWaitingTime: 4
-  maxWaitingTime: 4
+  minWaitingTime: 10
+  maxWaitingTime: 15
   satisfiedIcon: {fileID: 21300000, guid: e9231f1cc344ce14db28eba81c0d95e5, type: 3}
   unsatisfiedIcon: {fileID: 21300000, guid: 8a7779d91fb74b64baefee150ace84c4, type: 3}
-  timeToCloudDisappear: 1
+  timeToCloudDisappear: 1.5
+--- !u!210 &-3613640830265980203
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3569784327821911693}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
 --- !u!1 &3569784328153901536
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,7 +677,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0.000091552734, y: 0}
   m_SizeDelta: {x: 0.00065613, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}

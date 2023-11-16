@@ -19,6 +19,8 @@ public class BuyerView : ViewManager
     private Buyer _buyer;
     
     private bool _isSatisfied;
+    private bool _isLeaveUnsatisfied;
+    private bool _isWaiting;
 
     private float _waitingTIme;
     public GameObject BuyerCloud => buyerCloud;
@@ -28,43 +30,52 @@ public class BuyerView : ViewManager
     private void Start()
     {
         _buyer = GetComponent<Buyer>();
+        _buyer.OnPointReached += StartWaiting;
         _stateImage = buyerReactionPrefab.GetComponent<Image>();
-        timerBar.OnTimerEnds += SetUnsatisfied;
-        
-        OrderView.OnOrderViewCreated += StartWaiting;
-        SellManager.OnOrderComplete += SetReaction;
+        timerBar.OnWaitingTimeEnds += LeaveUnsatisfied;
     }
 
     private void OnDestroy()
     {
-        OrderView.OnOrderViewCreated -= StartWaiting;
-        SellManager.OnOrderComplete -= SetReaction;
-        timerBar.OnTimerEnds -= SetUnsatisfied;
+        timerBar.OnWaitingTimeEnds -= LeaveUnsatisfied;
     }
 
-    private void SetReaction(bool isSatisfied)
+    public void SetReaction(bool isSatisfied)
     {
-        timerBar.IsWaitingTimeEnds = false;
         timerBar.gameObject.SetActive(false);
+        //if (_isLeaveUnsatisfied) return;
         _stateImage.sprite = isSatisfied ? satisfiedIcon : unsatisfiedIcon;
+
+        ClearReactionView();
         Instantiate(buyerReactionPrefab, ParentContent);
         SetCloudView(BuyerCloud.gameObject, timeToCloudDisappear);
+        
+        _buyer.LeaveStore();
     }
 
-    private void SetUnsatisfied()
+    private void ClearReactionView()
     {
-        _buyer.LeaveStore();
+        foreach (Transform child in parentContent)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    private void LeaveUnsatisfied()
+    {
+        _isLeaveUnsatisfied = true;
         _isSatisfied = false;
         SetReaction(_isSatisfied);
     }
 
-
     private void StartWaiting()
     {
+        if (_isWaiting) return;
         _waitingTIme = Random.Range(minWaitingTime, maxWaitingTime);
         timerBar.StartTimer(_waitingTIme);
+        _isWaiting = true;
     }
-    
+
     [ContextMenu("Flip")]
     private void FlipCloud()
     {

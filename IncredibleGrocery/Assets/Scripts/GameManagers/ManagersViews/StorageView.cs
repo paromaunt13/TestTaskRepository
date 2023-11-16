@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class StorageView : MonoBehaviour
 {
+    [SerializeField] private OrderZoneManager orderZoneManager;
     [SerializeField] private StorageData storageData;
     [SerializeField] private ProductItemViewFactory productItemFactory;
     [SerializeField] private Transform contentParent;
@@ -15,13 +16,15 @@ public class StorageView : MonoBehaviour
 
     private void Start()
     {
-        OrderZoneManager.OnOrderCreated += SetAvailableSelects;
+        SellView.OnSellListSet += ResetViewValues;
+        orderZoneManager.OnOrderCreated += SetAvailableSelects;
         SetProductsView(storageData.Products);
     }
 
     private void OnDestroy()
     {
-        OrderZoneManager.OnOrderCreated -= SetAvailableSelects;
+        SellView.OnSellListSet -= ResetViewValues;
+        orderZoneManager.OnOrderCreated -= SetAvailableSelects;
     }
 
     private void ResetViewValues()
@@ -35,7 +38,6 @@ public class StorageView : MonoBehaviour
 
     private void SetAvailableSelects(Order order)
     {
-        ResetViewValues();
         _selectsAmount = order.Products.Count;
     }
 
