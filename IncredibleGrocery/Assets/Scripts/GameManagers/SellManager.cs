@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SellManager : MonoBehaviour
 {
-    [SerializeField] private OrderZoneManager orderZoneManager;
+    [SerializeField] private OrderManager orderManager;
     [SerializeField] private int costMultiplier;
 
     private List<ProductItem> _sellList = new();
@@ -17,12 +17,12 @@ public class SellManager : MonoBehaviour
     
     private void Start()
     {
-        orderZoneManager.OnOrderCreated += SetSellList;
+        orderManager.OnOrderCreated += SetSellList;
     }
 
     private void OnDestroy()
     {
-        orderZoneManager.OnOrderCreated -= SetSellList;
+        orderManager.OnOrderCreated -= SetSellList;
     }
 
     private void SetSellList(Order order)
@@ -49,7 +49,7 @@ public class SellManager : MonoBehaviour
         if (canReceiveMoney)
         {
             _totalOrderCost *=   correctOrder ? costMultiplier : 1;
-            PlayerMoney.Instance.AddMoney(_totalOrderCost);
+            PlayerMoney.Instance.EarnMoney(_totalOrderCost);
         }
 
         OnOrderComplete?.Invoke(correctOrder);

@@ -16,60 +16,100 @@ MonoBehaviour:
   - price: 10
     icon: {fileID: 21300000, guid: f74f90b50f417ce4a9e439c2c826b083, type: 3}
     productType: 0
+    baseAmount: 3
+    currentAmount: 4
   - price: 10
     icon: {fileID: 21300000, guid: 921c2a45fbe4cfd4fa8b609ae4653c1c, type: 3}
     productType: 1
+    baseAmount: 3
+    currentAmount: 2
   - price: 10
     icon: {fileID: 21300000, guid: 6e67dd3a3d0b43c45b137438359945ac, type: 3}
     productType: 7
+    baseAmount: 3
+    currentAmount: 3
   - price: 10
     icon: {fileID: 21300000, guid: d8529b82d6fb19041bdccbdec2d52f24, type: 3}
     productType: 5
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: 746a96c9f59c31d4ea0e46e6d09e6837, type: 3}
     productType: 4
+    baseAmount: 3
+    currentAmount: 2
   - price: 10
     icon: {fileID: 21300000, guid: 98827e4695b818449af66d879cc842ce, type: 3}
     productType: 3
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: 20f3626093f1a1946bfd398dd7341121, type: 3}
     productType: 12
+    baseAmount: 3
+    currentAmount: 0
   - price: 10
     icon: {fileID: 21300000, guid: 37264b65e6dd8da4aa8fa2a0b071dec7, type: 3}
     productType: 6
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: 59c4c287982ab604ea1271fdc57397ba, type: 3}
     productType: 10
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: 7e4c30e05cd594f408fab7d26966a14b, type: 3}
     productType: 9
+    baseAmount: 3
+    currentAmount: 2
   - price: 10
     icon: {fileID: 21300000, guid: af75e2c69bb467946be80bc94f233f84, type: 3}
     productType: 17
+    baseAmount: 3
+    currentAmount: 2
   - price: 10
     icon: {fileID: 21300000, guid: 6a94a87e6145e2640bf303335caff394, type: 3}
     productType: 2
+    baseAmount: 3
+    currentAmount: 2
   - price: 10
     icon: {fileID: 21300000, guid: 17009cabf1c95f2428a2ad3fd27edc25, type: 3}
     productType: 11
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: cebbee3fd60738e418070ce94959e4da, type: 3}
     productType: 8
+    baseAmount: 3
+    currentAmount: 4
   - price: 10
     icon: {fileID: 21300000, guid: 8a7f5c92a19c2c64790bb95c7ef127ca, type: 3}
     productType: 15
+    baseAmount: 3
+    currentAmount: 0
   - price: 10
     icon: {fileID: 21300000, guid: 521bd33a401da3548a6a6012cf81d967, type: 3}
     productType: 16
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: 31f3f0f1e60f02546a879f0f95687dac, type: 3}
     productType: 18
+    baseAmount: 3
+    currentAmount: 17
   - price: 10
     icon: {fileID: 21300000, guid: cbad7eb3254b1414c89e764848ece2c3, type: 3}
     productType: 19
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: e2cf0b91a662fe04ea9a5ed9ec3f28ee, type: 3}
     productType: 13
+    baseAmount: 3
+    currentAmount: 1
   - price: 10
     icon: {fileID: 21300000, guid: 5da9c3aa87cd9ec4ea54d16545963684, type: 3}
     productType: 14
+    baseAmount: 3
+    currentAmount: 1

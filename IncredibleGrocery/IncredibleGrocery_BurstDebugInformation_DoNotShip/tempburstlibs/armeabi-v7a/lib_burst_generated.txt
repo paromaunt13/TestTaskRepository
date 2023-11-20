@@ -123,6 +123,13 @@ Library: lib_burst_generated
 --compilation-defines=MODULE_PHYSICS_2D_EXISTS
 --compilation-defines=MODULE_PARTICLE_SYSTEM_EXISTS
 --compilation-defines=ENABLE_ANIMATION_BURST
+--compilation-defines=CINEMACHINE_TIMELINE
+--compilation-defines=CINEMACHINE_PHYSICS_2D
+--compilation-defines=CINEMACHINE_PHYSICS
+--compilation-defines=CINEMACHINE_UGUI
+--compilation-defines=CINEMACHINE_PIXEL_PERFECT_2_0_3
+--compilation-defines=CINEMACHINE_UNITY_ANIMATION
+--compilation-defines=CINEMACHINE_UNITY_IMGUI
 --compilation-defines=TIMELINE_FRAMEACCURATE
 --compilation-defines=ENABLE_SPRITESHAPE_BURST
 --generate-link-xml=Temp\burst.link.xml
@@ -136,6 +143,7 @@ Library: lib_burst_generated
 --root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Unity.Burst.dll
 --root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Unity.2D.Animation.Runtime.dll
 --root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Unity.TextMeshPro.dll
+--root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Cinemachine.dll
 --root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Unity.Timeline.dll
 --root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Unity.2D.SpriteShape.Runtime.dll
 --root-assembly=D:\Unity3D_Repositories\TestTaskRepository\IncredibleGrocery\Temp\StagingArea\Data\Managed\Unity.2D.PixelPerfect.dll

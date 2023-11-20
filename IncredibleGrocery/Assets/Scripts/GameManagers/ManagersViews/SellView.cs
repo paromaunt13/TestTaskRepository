@@ -2,20 +2,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class SellView : ViewManager
 {
     [SerializeField] private SellManager sellManager;
-
-    [Header("UI view elements")] 
-    [SerializeField] private AudioButton sellButton;
-    [SerializeField] private StoragePanel storagePanel;
+    [SerializeField] private OrderManager orderManager;
 
     [Header("Sell view")] 
     [SerializeField] private GameObject sellCloud;
     [SerializeField] private Transform contentParent;
-    [SerializeField] private ProductItemViewFactory productItemFactory;
 
     [Header("View animation settings")]
     [SerializeField] private float timeBeforeCheck;
@@ -23,68 +18,51 @@ public class SellView : ViewManager
     [SerializeField] private float timeBetweenChecks;
 
     private List<ProductItem> _productsToSell;
-    private readonly List<ProductItemView> _productsToSellView = new();
     private List<ProductItemView> _productsViewToCheck = new();
-
-    public static Action OnSellListSet;
+    public List<ProductItemView> ProductsToSellView { get; set; }
     
+    public static Action OnSellListSet;
+
     private void Start()
     {
-        sellButton.Button.interactable = false;
-        sellButton.Button.onClick.AddListener(() =>
-        {
-            //storagePanel.MovePanel();
-            sellButton.Button.interactable = false;
-            SetSellProducts();
-        });
+        ProductsToSellView = new List<ProductItemView>();
     }
 
-    public void AddProductSellView(ProductItemView productItemView)
-    {
-        _productsToSellView.Add(productItemView);
-    }
-
-    public void RemoveProductSellView(ProductItemView productItemView)
-    {
-        _productsToSellView.Remove(productItemView);
-    }
-
-    public void SetSellButtonState(int selectsAmount, int currentSelects)
-    {
-        sellButton.Button.interactable = currentSelects == selectsAmount;
-    }
-
-    private void SetSellProducts()
+    public void SetSellProducts()
     {
         _productsToSell?.Clear();
 
         _productsToSell = new List<ProductItem>();
-        foreach (var productView in _productsToSellView)
+        foreach (var productView in ProductsToSellView)
         {
             _productsToSell.Add(productView.Product);
         }
-        StartCoroutine(SetSellProductsView());
+        SetSellProductsView();
         OnSellListSet?.Invoke();
     }
 
-    private IEnumerator SetSellProductsView()
+    private void SetSellProductsView()
     {
-        Clear(contentParent, _productsToSellView);
+        ClearParent(contentParent, ProductsToSellView);
 
         _productsViewToCheck = new List<ProductItemView>();
         foreach (var product in _productsToSell)
         {
-            var sellItemView = productItemFactory.GetProductView(product, contentParent);
+            var sellItemView = ProductItemFactory.GetProductView(product, contentParent);
+            sellItemView.AmountCounterText.gameObject.SetActive(false);
             _productsViewToCheck.Add(sellItemView);
+            product.currentAmount--;
         }
 
+        if (orderManager.BuyerView.IsLeaveUnsatisfied)  return;
+        orderManager.BuyerView.IsWaitingForOrderCheck = true;
         SetCloudView(sellCloud, timeToCloudDisappear);
-        yield return new WaitForSeconds(timeBeforeCheck);
         StartCoroutine(CheckProducts(_productsViewToCheck));
     }
 
     private IEnumerator CheckProducts(List<ProductItemView> productItemsView)
     {
+        yield return new WaitForSeconds(timeBeforeCheck);
         var correctProductAmount = 0;
 
         foreach (var productView in productItemsView)
@@ -99,7 +77,6 @@ public class SellView : ViewManager
 
             yield return new WaitForSeconds(timeBetweenChecks);
         }
-
         sellManager.SetOrderFinalCost(correctProductAmount);
     }
 }

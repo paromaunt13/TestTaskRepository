@@ -1,61 +1,56 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class OrderView : ViewManager
 {
-    [SerializeField] private OrderZoneManager orderZoneManager;
-    [SerializeField] private ProductItemViewFactory productItemFactory;
+    [SerializeField] private OrderManager orderManager;
     [SerializeField] private float timeToCloudDisappear;
-
-    private List<ProductItem> _orderList = new();
-    private readonly List<ProductItemView> _orderItemsView;
-
-    public static Action OnOrderViewCreated;
 
     private GameObject _orderCloud;
     private Transform _contentParent;
+    
+    private List<ProductItem> _orderList = new();
+    private readonly List<ProductItemView> _orderItemsView = new();
 
     private void Start()
     {
-        orderZoneManager.OnBuyerDataCreated += SetViewData;
+        orderManager.OnBuyerViewDataCreated += SetViewData;
+        orderManager.OnOrderCreated += SetOrderView;
     }
-
-    private void SetViewData(GameObject orderCloud, Transform contentParent, Order order)
+    
+    private void OnDestroy()
+    {
+        orderManager.OnBuyerViewDataCreated -= SetViewData;
+        orderManager.OnOrderCreated -= SetOrderView;
+    }
+    
+    private void SetViewData(GameObject orderCloud, Transform contentParent)
     {
         _orderCloud = orderCloud;
         _contentParent = contentParent;
-        SetOrderView(order);
     }
-
-    private void OnDestroy()
-    {
-        orderZoneManager.OnBuyerDataCreated += SetViewData;
-    }
-
-    private IEnumerator ShowOrderCloud()
-    {
-        SetCloudView(_orderCloud, timeToCloudDisappear);
-
-        yield return new WaitForSeconds(timeToCloudDisappear);
-        
-        Clear(_contentParent, _orderItemsView);;
-
-        OnOrderViewCreated?.Invoke();
-    }
-
+    
     private void SetOrderView(Order order)
     {
-        Clear(_contentParent, _orderItemsView);
+        StopAllCoroutines();
+        ClearParent(_contentParent, _orderItemsView);
     
         _orderList = order.Products;
-        foreach (var product in _orderList)
+        foreach (var orderItemView in _orderList.Select(product => ProductItemFactory.GetProductView(product, _contentParent)))
         {
-            productItemFactory.GetProductView(product, _contentParent);
+            orderItemView.AmountCounterText.gameObject.SetActive(false);
+            _orderItemsView.Add(orderItemView);
         }
 
         StartCoroutine(ShowOrderCloud());
+    }
+    
+    private IEnumerator ShowOrderCloud()
+    {
+        SetCloudView(_orderCloud, timeToCloudDisappear);
+        yield return new WaitForSeconds(timeToCloudDisappear);
+        ClearParent(_contentParent, _orderItemsView);;
     }
 }

@@ -40,7 +40,7 @@ public class MainMenuScreen : MonoBehaviour
 
     private void StartNewGame()
     {
-        PlayerPrefs.DeleteKey(PersistentDataManager.MoneyKey);
+        PlayerPrefs.DeleteAll();
         PersistentDataManager.FirstLaunch = false;
         SceneManager.LoadScene(gameSceneIndex);
     }

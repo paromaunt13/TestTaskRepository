@@ -19,8 +19,11 @@ public class TimerBar : MonoBehaviour
         gameObject.SetActive(true);
         _tween = slider.DOValue(0f, waitingTime).SetEase((Ease.Linear)).OnComplete(() =>
          {
-             if (gameObject.activeSelf && !gameObject.IsDestroyed()) 
+             if (gameObject.activeSelf && !gameObject.IsDestroyed())
+             {
                  OnWaitingTimeEnds?.Invoke();
+                 gameObject.SetActive(false);
+             }
              else
                  gameObject.SetActive(false);
          });

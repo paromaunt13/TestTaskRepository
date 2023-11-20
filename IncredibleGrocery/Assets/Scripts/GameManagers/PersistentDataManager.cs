@@ -1,3 +1,5 @@
+#nullable enable
+using System.Collections.Generic;
 using UnityEngine;
 
 public class PersistentDataManager
@@ -5,13 +7,12 @@ public class PersistentDataManager
     private const string FirstLaunchKey = "FirstLaunch";
     private const string SoundKey = "SoundEnabled";
     private const string MusicKey = "MusicEnabled";
-    
-    public const string MoneyKey = "PlayerMoney";
+    private const string MoneyKey = "PlayerMoney";
 
     private static bool? _isFirstLaunch;
     private static bool? _musicState;
     private static bool? _soundState;
-    
+
     private static int? _moneyAmount;
 
     public static bool MusicState
@@ -46,22 +47,6 @@ public class PersistentDataManager
         }
     }
 
-    public static bool FirstLaunch
-    {
-        get
-        {
-            if (!PlayerPrefs.HasKey(FirstLaunchKey)) return true;
-            _isFirstLaunch ??= PlayerPrefs.GetInt(FirstLaunchKey, 0) == 1;
-            return _isFirstLaunch.Value;
-        }
-        set
-        {
-            _isFirstLaunch = value;
-            PlayerPrefs.SetInt(FirstLaunchKey, _isFirstLaunch.Value ? 1 : 0);
-            PlayerPrefs.Save();
-        }
-    }
-    
     public static int MoneyAmount
     {
         get
@@ -74,6 +59,22 @@ public class PersistentDataManager
         {
             _moneyAmount = value;
             PlayerPrefs.SetInt(MoneyKey, _moneyAmount.Value);
+            PlayerPrefs.Save();
+        }
+    }
+    
+    public static bool FirstLaunch
+    {
+        get
+        {
+            if (!PlayerPrefs.HasKey(FirstLaunchKey)) return true;
+            _isFirstLaunch ??= PlayerPrefs.GetInt(FirstLaunchKey, 0) == 1;
+            return _isFirstLaunch.Value;
+        }
+        set
+        {
+            _isFirstLaunch = value;
+            PlayerPrefs.SetInt(FirstLaunchKey, _isFirstLaunch.Value ? 1 : 0);
             PlayerPrefs.Save();
         }
     }
