@@ -2,12 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class SellView : ViewManager
 {
-    [SerializeField] private SellManager sellManager;
-    [SerializeField] private OrderManager orderManager;
-
     [Header("Sell view")] 
     [SerializeField] private GameObject sellCloud;
     [SerializeField] private Transform contentParent;
@@ -16,12 +14,22 @@ public class SellView : ViewManager
     [SerializeField] private float timeBeforeCheck;
     [SerializeField] private float timeToCloudDisappear;
     [SerializeField] private float timeBetweenChecks;
-
+    
+    private SellManager _sellManager;
+    private OrderManager _orderManager;
+    
     private List<ProductItem> _productsToSell;
     private List<ProductItemView> _productsViewToCheck = new();
     public List<ProductItemView> ProductsToSellView { get; set; }
     
     public static Action OnSellListSet;
+
+    [Inject]
+    private void Construct(OrderManager orderManager, SellManager sellManager)
+    {
+        _orderManager = orderManager;
+        _sellManager = sellManager;
+    }
 
     private void Start()
     {
@@ -48,14 +56,14 @@ public class SellView : ViewManager
         _productsViewToCheck = new List<ProductItemView>();
         foreach (var product in _productsToSell)
         {
-            var sellItemView = ProductItemFactory.GetProductView(product, contentParent);
+            var sellItemView = ProductItemViewFactory.GetProductView(product, contentParent);
             sellItemView.AmountCounterText.gameObject.SetActive(false);
             _productsViewToCheck.Add(sellItemView);
             product.currentAmount--;
         }
 
-        if (orderManager.BuyerView.IsLeaveUnsatisfied)  return;
-        orderManager.BuyerView.IsWaitingForOrderCheck = true;
+        if (_orderManager.BuyerView.IsLeaveUnsatisfied)  return;
+        _orderManager.BuyerView.IsWaitingForOrderCheck = true;
         SetCloudView(sellCloud, timeToCloudDisappear);
         StartCoroutine(CheckProducts(_productsViewToCheck));
     }
@@ -67,7 +75,7 @@ public class SellView : ViewManager
 
         foreach (var productView in productItemsView)
         {
-            if (sellManager.CheckProduct(productView.Product))
+            if (_sellManager.CheckProduct(productView.Product))
             {
                 correctProductAmount++;
                 productView.SetState(ProductViewState.Correct);
@@ -77,6 +85,9 @@ public class SellView : ViewManager
 
             yield return new WaitForSeconds(timeBetweenChecks);
         }
-        sellManager.SetOrderFinalCost(correctProductAmount);
+        _sellManager.SetOrderFinalCost(correctProductAmount);
     }
+
+    public void ResetCurrentSellView() =>
+        ClearParent(contentParent, ProductsToSellView);
 }

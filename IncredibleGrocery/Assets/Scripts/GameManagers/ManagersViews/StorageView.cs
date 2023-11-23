@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class StorageView : ViewManager
 {
-    [SerializeField] protected StorageData storageData;
-    [SerializeField] protected Transform contentParent;
-
+    [SerializeField] private Transform contentParent;
+    private StorageData _storageData;
     private  List<ProductItemView> _productItemsView;
     
     private int _currentSelects;
@@ -17,10 +17,14 @@ public class StorageView : ViewManager
     public Action<ProductItemView> OnProductIItemViewAdded;
     public Action<ProductItemView> OnProductIItemViewRemoved;
 
+    [Inject]
+    private void Construct(StorageDataConfig storageDataConfig) =>
+        _storageData = storageDataConfig.StorageData;
+    
     private void Start()
     {
         AbleToSelect = false;
-        _productItemsView = GetProductsView(storageData.Products, contentParent, true);
+        _productItemsView = GetProductsView(_storageData.Products, contentParent, true);
         LoadProductsViewData();
         SellView.OnSellListSet += ResetViewValues;
         WarehouseView.OnWarehouseOrderCreated += UpdateProductsAmount;
@@ -54,7 +58,7 @@ public class StorageView : ViewManager
         }
     }
 
-    private void ResetViewValues()
+    public void ResetViewValues()
     {
         AbleToSelect = false;
         _currentSelects = 0;
@@ -65,6 +69,7 @@ public class StorageView : ViewManager
             if (productItemView.Product.currentAmount == 0)
                 productItemView.SetState(ProductViewState.OutOfStock);
         }
+        OnSelectsValueChanged?.Invoke(SelectsAmount, _currentSelects);
     }
 
     protected override void OnProductViewClick(ProductItemView productItemView)

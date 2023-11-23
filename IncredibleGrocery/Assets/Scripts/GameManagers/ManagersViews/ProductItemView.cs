@@ -64,7 +64,7 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
         _productImage.sprite = product.icon;
 
         Product = product;
-        AmountCounterText.text = string.Format(counterTextFormat, Product.currentAmount.ToString());
+        UpdateCounterText(Product.currentAmount);
         stateImage.gameObject.SetActive(false);
 
         CurrentProductState = ProductViewState.Unselected;
@@ -72,10 +72,8 @@ public class ProductItemView : MonoBehaviour, IPointerClickHandler
         _transparency = _productImage.color;
     }
 
-    public void UpdateCounterText(int currentAmount)
-    {
+    public void UpdateCounterText(int currentAmount) =>
         AmountCounterText.text = string.Format(counterTextFormat, currentAmount.ToString());
-    }
 
     public void OnPointerClick(PointerEventData eventData)
     {

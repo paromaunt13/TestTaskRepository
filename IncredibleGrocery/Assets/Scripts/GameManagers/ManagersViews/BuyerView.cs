@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,8 +10,6 @@ public class BuyerView : ViewManager
     [SerializeField] private GameObject buyerReactionPrefab;
 
     [Header("View settings")]
-    [SerializeField] private float minWaitingTime;
-    [SerializeField] private float maxWaitingTime;
     [SerializeField] private Sprite satisfiedIcon;
     [SerializeField] private Sprite unsatisfiedIcon;
     [SerializeField] private float timeToCloudDisappear;
@@ -21,31 +20,29 @@ public class BuyerView : ViewManager
     private bool _isSatisfied;
     private bool _isWaiting;
     
-    private float _waitingTIme;
-    
     public GameObject BuyerCloud => buyerCloud;
     public Transform ParentContent => parentContent;
     public bool IsWaitingForOrderCheck { get; set; }
     public bool IsLeaveUnsatisfied { get; set; }
+    public Action OnBuyerLeaved;
     
     private void Start()
     {
         _buyer = GetComponent<Buyer>();
-        _buyer.OnPointReached += StartWaiting;
         _stateImage = buyerReactionPrefab.GetComponent<Image>();
+        _buyer.OnPointReached += StartWaiting;
         timerBar.OnWaitingTimeEnds += LeaveUnsatisfied;
     }
 
     private void OnDestroy()
     {
         timerBar.OnWaitingTimeEnds -= LeaveUnsatisfied;
+        _buyer.OnPointReached -= StartWaiting;
         StopAllCoroutines();
     }
 
     public void SetReaction(bool isSatisfied)
     {
-        StopAllCoroutines();
-        
         timerBar.gameObject.SetActive(false);
         _stateImage.sprite = isSatisfied ? satisfiedIcon : unsatisfiedIcon;
 
@@ -67,15 +64,15 @@ public class BuyerView : ViewManager
         if (IsWaitingForOrderCheck) return;
         IsLeaveUnsatisfied = true;
         _isSatisfied = !IsLeaveUnsatisfied;
+        OnBuyerLeaved?.Invoke();
         SetReaction(_isSatisfied);
         AudioManager.Instance.PlaySound(SoundType.UnsatisfiedSound);
     }
 
-    private void StartWaiting()
+    private void StartWaiting(float waitingTime)
     {
         if (_isWaiting) return;
-        _waitingTIme = Random.Range(minWaitingTime, maxWaitingTime);
-        timerBar.StartTimer(_waitingTIme);
+        timerBar.StartTimer(waitingTime);
         _isWaiting = true;
     }
 

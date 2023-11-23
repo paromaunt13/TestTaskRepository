@@ -14,16 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <SoundsDataList>k__BackingField:
   - soundType: 0
-    audioClip: {fileID: 8300000, guid: 36d9dca61b2b24746a24ebe901f1fe1e, type: 3}
+    audioClip: {fileID: 8300000, guid: 536cd88b34f032e44a7d268925582061, type: 3}
   - soundType: 1
-    audioClip: {fileID: 8300000, guid: 8453372e6ed21114d932700140bc02b8, type: 3}
+    audioClip: {fileID: 8300000, guid: 36d9dca61b2b24746a24ebe901f1fe1e, type: 3}
   - soundType: 2
-    audioClip: {fileID: 8300000, guid: f101597a2424c144b9bf0b17f3a2268c, type: 3}
+    audioClip: {fileID: 8300000, guid: 8453372e6ed21114d932700140bc02b8, type: 3}
   - soundType: 3
-    audioClip: {fileID: 8300000, guid: eb6c852359bc0cb4889fc62a87e4c946, type: 3}
+    audioClip: {fileID: 8300000, guid: f101597a2424c144b9bf0b17f3a2268c, type: 3}
   - soundType: 4
-    audioClip: {fileID: 8300000, guid: 07a4617f8ba716a47bd19f0e8e983826, type: 3}
+    audioClip: {fileID: 8300000, guid: eb6c852359bc0cb4889fc62a87e4c946, type: 3}
   - soundType: 5
-    audioClip: {fileID: 8300000, guid: 233ccdf403605b04c9351daa57223ac4, type: 3}
+    audioClip: {fileID: 8300000, guid: 07a4617f8ba716a47bd19f0e8e983826, type: 3}
   - soundType: 6
+    audioClip: {fileID: 8300000, guid: 233ccdf403605b04c9351daa57223ac4, type: 3}
+  - soundType: 7
     audioClip: {fileID: 8300000, guid: 543777a3a9936b248b093e755eb32f20, type: 3}

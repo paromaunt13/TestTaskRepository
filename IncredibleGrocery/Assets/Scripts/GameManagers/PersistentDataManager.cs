@@ -7,7 +7,7 @@ public class PersistentDataManager
     private const string FirstLaunchKey = "FirstLaunch";
     private const string SoundKey = "SoundEnabled";
     private const string MusicKey = "MusicEnabled";
-    private const string MoneyKey = "PlayerMoney";
+    public const string MoneyKey = "PlayerMoney";
 
     private static bool? _isFirstLaunch;
     private static bool? _musicState;

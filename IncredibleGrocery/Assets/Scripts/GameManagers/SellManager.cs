@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class SellManager : MonoBehaviour
 {
-    [SerializeField] private OrderManager orderManager;
     [SerializeField] private int costMultiplier;
-
+    private OrderManager _orderManager;
+    
     private List<ProductItem> _sellList = new();
 
     private Order _order = new();
@@ -14,18 +15,16 @@ public class SellManager : MonoBehaviour
     private int _totalOrderCost;
 
     public Action<bool> OnOrderComplete;
-    
-    private void Start()
-    {
-        orderManager.OnOrderCreated += SetSellList;
-    }
 
-    private void OnDestroy()
-    {
-        orderManager.OnOrderCreated -= SetSellList;
-    }
+    [Inject]
+    private void Construct(OrderManager orderManager) =>
+        _orderManager = orderManager;
+    private void Start() => 
+        _orderManager.OnOrderCreated += SetSellList;
+    private void OnDestroy() => 
+        _orderManager.OnOrderCreated -= SetSellList;
 
-    private void SetSellList(Order order)
+        private void SetSellList(Order order)
     {
         _totalOrderCost = 0;
         _order = order;

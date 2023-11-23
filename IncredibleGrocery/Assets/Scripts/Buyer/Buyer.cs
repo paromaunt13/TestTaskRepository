@@ -2,9 +2,12 @@ using System;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Rendering;
+using Random = UnityEngine.Random;
 
 public class Buyer : MonoBehaviour
 {
+    [SerializeField] private float minWaitingTime;
+    [SerializeField] private float maxWaitingTime;
     [Header("Moving settings")]
     [SerializeField] private GameObject buyerWalking;
     [SerializeField] private Transform raycastPoint;
@@ -23,13 +26,15 @@ public class Buyer : MonoBehaviour
     
     private bool _ableToCheck;
     private bool _isOnOrderPoint;
+
+    private float _waitingTime;
     
     private Sequence _sequence;
-    
-    public Vector3[] PathPoints { get; set; }
-    public Transform ExitPoint { get; set; }
-    public Transform EntrancePoint { get; set; }
-    public Action OnPointReached;
+
+    private Vector3[] _pathPoints;
+    private Transform _exitPoint;
+    private Transform _entrancePoint;
+    public Action<float> OnPointReached;
 
     private void Start()
     {
@@ -38,6 +43,7 @@ public class Buyer : MonoBehaviour
         _sortingGroup.sortingOrder = -1;
         _buyerTag = gameObject.tag;
         _ableToCheck = false;
+        _waitingTime = Random.Range(minWaitingTime, maxWaitingTime);
         MoveToEntrance();
     }
 
@@ -54,7 +60,7 @@ public class Buyer : MonoBehaviour
         {
             transform.DOPause();
             buyerWalking.transform.DOPause();
-            OnPointReached?.Invoke();
+            OnPointReached?.Invoke(_waitingTime);
         }
         else
         {
@@ -73,7 +79,7 @@ public class Buyer : MonoBehaviour
     {
         _sequence.Append(buyerWalking.transform.DOLocalMoveY(buyerWalking.transform.position.y, stepDuration)
                 .SetLoops(-1, LoopType.Yoyo).SetEase(ease))
-                .Join(transform.DOMove(EntrancePoint.position, moveDurationToEntrance).SetEase(ease).OnComplete(() =>
+                .Join(transform.DOMove(_entrancePoint.position, moveDurationToEntrance).SetEase(ease).OnComplete(() =>
                 { 
                     _ableToCheck = true;
                     _sortingGroup.sortingOrder = 0;
@@ -85,11 +91,11 @@ public class Buyer : MonoBehaviour
     {
         _sequence.Append(buyerWalking.transform.DOLocalMoveY(buyerWalking.transform.position.y, stepDuration)
                 .SetLoops(-1, LoopType.Yoyo).SetEase(ease))
-                .Join(transform.DOPath(PathPoints, moveDurationInPath).SetEase(ease).OnComplete(() =>
+                .Join(transform.DOPath(_pathPoints, moveDurationInPath).SetEase(ease).OnComplete(() =>
             {
                 _isOnOrderPoint = true;
                 buyerWalking.transform.DOPause();
-                OnPointReached?.Invoke();
+                OnPointReached?.Invoke(_waitingTime);
             }));
     }
     
@@ -105,11 +111,11 @@ public class Buyer : MonoBehaviour
                 .Join(transform.DOMove(new Vector3(position.x, position.y + 1f, position.z), moveDurationToExit/3).OnComplete(() =>
             {
                 Flip();
-                transform.DOMove(EntrancePoint.position, moveDurationToExit).SetEase(ease).OnComplete(() =>
+                transform.DOMove(_entrancePoint.position, moveDurationToExit).SetEase(ease).OnComplete(() =>
                 {
                     _collider.enabled = true;
                     _sortingGroup.sortingOrder = -1;
-                    transform.DOMove(ExitPoint.position, moveDurationToExit).SetEase(ease);
+                    transform.DOMove(_exitPoint.position, moveDurationToExit).SetEase(ease);
                 });
             }));
     }
@@ -122,5 +128,12 @@ public class Buyer : MonoBehaviour
         buyerWalking.transform.localScale = localScale;
     }
 
+    public void SetBuyerMoveData(Vector3[] pathPoints, Transform entrancePoint, Transform exitPoint)
+    {
+        _pathPoints = pathPoints;
+        _entrancePoint = entrancePoint;
+        _exitPoint = exitPoint;
+    }
+    
     public void LeaveStore() => MoveToExit();
 }

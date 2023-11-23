@@ -10,12 +10,9 @@ public class OnOffButton : AudioButton
     private const string OnText = "ON";
     private const string OffText = "OFF";
 
-    private bool _isEnabled;
-    
     public void SetButtonState(bool isEnabled)
     {
-        _isEnabled = isEnabled;
-        Button.image.sprite = _isEnabled ? enabledImage : disabledImage;
-        buttonText.text = _isEnabled ? OnText : OffText;
+        Button.image.sprite = isEnabled ? enabledImage : disabledImage;
+        buttonText.text = isEnabled ? OnText : OffText;
     }
 }

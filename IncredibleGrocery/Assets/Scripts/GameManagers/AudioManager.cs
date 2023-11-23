@@ -9,12 +9,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource backgroundMusic;
     [SerializeField] private AudioMixerGroup soundGroup;
     [SerializeField] private AudioMixerGroup backgroundMusicGroup;
-
     [SerializeField] private SoundsData soundsData;
     
-   private Dictionary<SoundType, AudioClip> _soundsDictionary;
-
     private AudioSource _audioSource;
+    
+    private Dictionary<SoundType, AudioClip> _soundsDictionary;
 
     private bool _musicEnabled;
     
@@ -33,7 +32,7 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null)
+        if (Instance !=null)
             Destroy(gameObject);
         Instance = this;
         

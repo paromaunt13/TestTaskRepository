@@ -3,48 +3,34 @@ using UnityEngine;
 
 public class WarehousePanelView : StorePanel
 {
-    [SerializeField] private string textFormat;
-    [field: SerializeField] public WarehouseView WarehouseView { get; private set; }
+    [SerializeField] private WarehouseView warehouseView;
+    [SerializeField] private AudioButton orderButton;
+    [SerializeField] private TMP_Text orderCostText;
     [field: SerializeField] public AudioButton CloseButton { get; private set; }
-    [field: SerializeField] public AudioButton OrderButton { get; private set; }
-    [field: SerializeField] public TMP_Text OrderCostText { get; set; }
 
     private void Start()
     {
-        SetUnInteractable();
-        WarehouseView.OnOrderValueChanged += UpdateOrderButtonState;
-        OrderButton.Button.onClick.AddListener(() =>
+        SetInteractable(false);
+        warehouseView.OnOrderValueChanged += UpdateOrderButtonState;
+        orderButton.Button.onClick.AddListener(() =>
         {
-            WarehouseView.SetWarehouseOrder();
-            WarehouseView.ResetValues();
+            warehouseView.SetWarehouseOrder();
+            warehouseView.ResetValues();
         });
     }
 
-    private void OnDestroy()
-    {
-        WarehouseView.OnOrderValueChanged -= UpdateOrderButtonState;
-    }
-
+    private void OnDestroy() =>
+        warehouseView.OnOrderValueChanged -= UpdateOrderButtonState;
+    
     private void UpdateOrderButtonState(int orderCost)
     {
-        OrderCostText.text = string.Format(textFormat, orderCost.ToString());
-        if (orderCost <= 0 || PersistentDataManager.MoneyAmount < orderCost)
-        {
-            SetUnInteractable();
-            return;
-        }
-        SetInteractable();
+        orderCostText.text = "$" + orderCost;
+        SetInteractable(!(orderCost <= 0 || PersistentDataManager.MoneyAmount < orderCost)); 
     }
 
-    private void SetInteractable()
+    private void SetInteractable(bool isInteractable)
     {
-        OrderButton.Button.interactable = true;
-        OrderCostText.color = Color.green;
+        orderButton.Button.interactable = isInteractable;
+        orderCostText.color = isInteractable? Color.green : Color.red;
     }
-
-    private void SetUnInteractable()
-    {
-        OrderButton.Button.interactable = false;
-        OrderCostText.color = Color.red;
-    } 
 }

@@ -552,6 +552,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f8b9968472868f419610fe7bcb787d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minWaitingTime: 10
+  maxWaitingTime: 15
   buyerWalking: {fileID: 3569784328153901536}
   raycastPoint: {fileID: 50143636330902068}
   stepDuration: 0.25
@@ -572,13 +574,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 364486f0cf77e264a863805e8a0c5bde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <ProductItemFactory>k__BackingField: {fileID: 0}
   timerBar: {fileID: 3569784327616810243}
   buyerCloud: {fileID: 3569784326961296649}
   parentContent: {fileID: 3569784326791750975}
   buyerReactionPrefab: {fileID: 5089639455861990538, guid: ac7a2cf2692e90d4c89d274feebf5b87, type: 3}
-  minWaitingTime: 10
-  maxWaitingTime: 15
   satisfiedIcon: {fileID: 21300000, guid: e9231f1cc344ce14db28eba81c0d95e5, type: 3}
   unsatisfiedIcon: {fileID: 21300000, guid: 8a7779d91fb74b64baefee150ace84c4, type: 3}
   timeToCloudDisappear: 1.5

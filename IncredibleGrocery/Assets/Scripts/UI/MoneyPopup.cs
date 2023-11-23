@@ -6,26 +6,24 @@ using UnityEngine.UI;
 
 public class MoneyPopup : MonoBehaviour
 {
-    [field: SerializeField] public TMP_Text MoneyText { get; set; }
-    [SerializeField] private float moveDuration;
-    [SerializeField] private float moveDelay;
-    [SerializeField] private float fadeDuration;
-    [SerializeField] private float fadeDelay;
-    [SerializeField] private Ease ease;
+    [SerializeField] private TMP_Text moneyText;
+
+    private const float MoveDuration = 1f;
+    private const float MoveDelay = 0.2f;
+    private const float FadeDuration = 1f;
+    private const float FadeDelay = 0.5f;
+    private const Ease Ease = DG.Tweening.Ease.InOutQuart;
     
     private Image _popupImage;
     private Sequence _sequence;
     private Color _transparency;
-    public Transform EndPosition { get; set; }
-    public Transform StartPosition { get; set; }
 
-    private void Start()
+    private void OnEnable()
     {
         _popupImage = GetComponent<Image>();
         _transparency = _popupImage.color;
         _transparency.a = 0f;
         _popupImage.color = _transparency;
-        ShowPopup();
     }
 
     private void OnDestroy()
@@ -34,16 +32,18 @@ public class MoneyPopup : MonoBehaviour
         _popupImage.DOKill();
     }
 
-    private void ShowPopup()
+    public void ShowPopup(Transform startPoint, Transform endPoint, string moneyPopupText)
     {
-        _sequence.Append(_popupImage.DOFade(1f, fadeDuration)).
-            Join(transform.DOMove(EndPosition.position, moveDuration)
-            .SetEase(ease)
+        moneyText.text = moneyPopupText;
+        
+        _sequence.Append(_popupImage.DOFade(1f, FadeDuration)).
+            Join(transform.DOMove(endPoint.position, MoveDuration)
+            .SetEase(Ease)
             .OnComplete(() =>
             {
-                _sequence.Append(_popupImage.DOFade(0f, fadeDuration).SetDelay(fadeDelay)).
-                    Join(transform.DOMove(StartPosition.position, moveDuration).SetDelay(moveDelay)
-                    .SetEase(ease).OnComplete(() => Destroy(gameObject)));
+                _sequence.Append(_popupImage.DOFade(0f, FadeDuration).SetDelay(FadeDelay)).
+                    Join(transform.DOMove(startPoint.position, MoveDuration).SetDelay(MoveDelay)
+                    .SetEase(Ease).OnComplete(() => Destroy(gameObject)));
             }));
     }
 }

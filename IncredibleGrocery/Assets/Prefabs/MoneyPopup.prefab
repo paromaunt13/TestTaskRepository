@@ -90,7 +90,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd2c29b115103bb4581000fe54c600ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <MoneyText>k__BackingField: {fileID: 6642376206064601217}
+  moneyText: {fileID: 6642376206064601217}
   moveDuration: 1
   moveDelay: 0.2
   fadeDuration: 0.5

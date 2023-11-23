@@ -1,10 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class ViewManager : MonoBehaviour
 {
-    [field: SerializeField] public ProductItemViewFactory ProductItemFactory { get; private set; }
+    protected ProductItemViewFactory ProductItemViewFactory;
+
+    private Coroutine _coroutine;
+
+    [Inject]
+    private void Construct(ProductItemViewFactory productItemViewFactory) =>
+        ProductItemViewFactory = productItemViewFactory;
+    
     private IEnumerator ShowCloud(GameObject cloud, float timeToWait)
     {
         cloud.SetActive(true);
@@ -16,7 +24,9 @@ public class ViewManager : MonoBehaviour
 
     protected void SetCloudView(GameObject cloud, float timeToWait)
     {
-        StartCoroutine(ShowCloud(cloud, timeToWait));
+        if (_coroutine is not null)
+            StopCoroutine(_coroutine);
+        _coroutine = StartCoroutine(ShowCloud(cloud, timeToWait));
     }
 
     protected void ClearParent(Transform contentParent, List<ProductItemView> productItemViews)
@@ -24,7 +34,7 @@ public class ViewManager : MonoBehaviour
         foreach (Transform child in contentParent)
             Destroy(child.gameObject);
 
-        productItemViews?.Clear();
+        ClearProductItemsView(productItemViews);
     }
     
     protected void ClearProductItemsView(List<ProductItemView> productItemsView)
@@ -42,7 +52,7 @@ public class ViewManager : MonoBehaviour
         foreach (var product in products)
         {
             product.currentAmount = product.baseAmount;
-            var productItemView = ProductItemFactory.GetProductView(product, contentParent);
+            var productItemView = ProductItemViewFactory.GetProductView(product, contentParent);
             productItemView.Click += OnProductViewClick;
             productItemView.SetState(ProductViewState.Unselected);
             productsItemView.Add(productItemView);

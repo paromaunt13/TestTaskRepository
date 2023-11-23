@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class WarehouseView : ViewManager
 {
-    [SerializeField] private StorageData storageData;
     [SerializeField] private Transform contentParent;
-
-    private int _currentSelects;
+    private StorageData _warehouseData;
+    
     private int _orderCost;
     
     private  List<ProductItemView> _productItemsView;
@@ -16,11 +16,14 @@ public class WarehouseView : ViewManager
     public static Action<List<ProductItemView>> OnWarehouseOrderCreated;
     public Action<int> OnOrderValueChanged;
 
+    [Inject]
+    private void Construct(StorageDataConfig storageDataConfig) =>
+        _warehouseData = storageDataConfig.WarehouseData;
     private void Start()
     {
         _orderedProductItemsView = new List<ProductItemView>();
         ClearProductItemsView(_productItemsView);
-        _productItemsView = GetProductsView(storageData.Products, contentParent, false);
+        _productItemsView = GetProductsView(_warehouseData.Products, contentParent, false);
     }
 
     protected override void OnProductViewClick(ProductItemView productItemView)
@@ -30,17 +33,15 @@ public class WarehouseView : ViewManager
         switch (productItemView.CurrentProductState)
         {
             case ProductViewState.Selected:
-                _currentSelects++;
                 _orderedProductItemsView.Add(productItemView);
                 break;
             case ProductViewState.Unselected:
             {
-                _currentSelects--;
                 _orderedProductItemsView.Remove(productItemView);
                 break;
             }
         }
-        _orderCost = _currentSelects * productItemView.Product.price;
+        _orderCost = _orderedProductItemsView.Count * productItemView.Product.price;
         OnOrderValueChanged?.Invoke(_orderCost);
     }
 
@@ -52,7 +53,6 @@ public class WarehouseView : ViewManager
 
     public void ResetValues()
     {
-        _currentSelects = 0;
         _orderCost = 0;
         
         foreach (var item in _productItemsView)

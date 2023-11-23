@@ -1,5 +1,6 @@
 public enum SoundType
 {
+    BackgroundMusic,
     ButtonClickSound,
     BubbleAppearSound,
     BubbleDisappearSound,
